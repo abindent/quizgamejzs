@@ -1,0 +1,16 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Server for quiz game",
+  "main": "index.ts",
+  "repository": "https://github.com/abindent/quizgamejzs",
+  "author": "Sinchan Maitra",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4",
+    "socket.io": "^4.7.5",
+    "ts-node": "^10.9.2"
+  }
+}
