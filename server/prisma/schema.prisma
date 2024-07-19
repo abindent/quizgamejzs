@@ -1,0 +1,42 @@
+datasource quizdom {
+  provider = "mongodb"
+  url      = env("MONGO_URI")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// TEAM MODEL
+
+model Team {
+  id        String    @id @default(auto()) @map("_id") @quizdom.ObjectId
+  team      String
+  member    Member[]
+  category  String
+  password  String
+  school    String
+  messages  Message[]
+  role      Role      @default(TEAM)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+type Member {
+  member1 String
+  member2 String
+}
+
+enum Role {
+  TEAM
+  ADMIN
+}
+
+// MESSAGE MODEL
+model Message {
+  id      String @id @default(auto()) @map("_id") @quizdom.ObjectId
+  message String
+  team    Team?  @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  team_id String @quizdom.ObjectId
+  createdAt DateTime @default(now())
+}
