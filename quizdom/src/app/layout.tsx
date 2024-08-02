@@ -25,7 +25,7 @@ export default function RootLayout({
       <head>
         <ThemeModeScript />
       </head>
-      <body className="dark:bg-slate-700">
+      <body className="dark:bg-gradient-to-r from-blue-500 via-40% via-amber-300 to-pink-500">
         <Layout>
           {children}
         </Layout>

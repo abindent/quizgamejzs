@@ -7,7 +7,7 @@ import { Navbar, NavbarBrand, NavbarCollapse, NavbarLink, NavbarToggle, DarkThem
 export default function AppBar() {
     const path = usePathname();
     return (
-        <Navbar fluid rounded>
+        <Navbar className="dark:bg-gradient-to-r dark:from-indigo-500 dark:via-purple-600 dark:to-pink-500" fluid rounded>
             <NavbarBrand as={Link} href="/">
                 <img src="/icon.png" className="mr-3 h-6 sm:h-9" alt="Flowbite React Logo" />
                 <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Quizdom</span>
@@ -21,7 +21,7 @@ export default function AppBar() {
                 <NavbarLink href="/quiz/answer" active={Boolean(path.match("/quiz/answer"))}>Answers</NavbarLink>
                 <NavbarLink href="/admin/stats" active={Boolean(path.match("/admin/stats"))}>Statistics</NavbarLink>
             </NavbarCollapse>
-            <DarkThemeToggle />
+            <DarkThemeToggle className="dark:text-gray-600" />
         </Navbar>
     );
 }
