@@ -8,19 +8,6 @@ generator client {
   previewFeatures = ["relationJoins"]
 }
 
-// ROOM MODEL
-model Room {
-  id    String   @id @default(auto()) @map("_id") @quizdom.ObjectId
-  type  RoomType @default(INTRASCHOOL_JR)
-  teams Team[]
-}
-
-enum RoomType {
-  INTRASCHOOL_JR
-  INTRASCHOOL_SR
-  INTERSCHOOL
-}
-
 // TEAM MODEL
 
 model Team {
@@ -32,8 +19,6 @@ model Team {
   school    String
   messages  Message[]
   role      String?   @default("TEAM")
-  room      Room?     @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  team_id   String    @quizdom.ObjectId
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -53,6 +38,9 @@ type Member {
 model Message {
   id        String   @id @default(auto()) @map("_id") @quizdom.ObjectId
   message   String
+  type      String   @default("INTRASCHOOL_JR")
+  round     String?
+  qno       String?
   team      Team?    @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   team_id   String   @quizdom.ObjectId
   createdAt DateTime @default(now())
