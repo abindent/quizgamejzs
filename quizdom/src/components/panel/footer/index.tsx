@@ -2,7 +2,7 @@ import { Footer, FooterBrand, FooterCopyright, FooterDivider } from "flowbite-re
 
 export default function AppFooter() {
   return (
-    <Footer container className="fixed bottom-0">
+    <Footer container className="initial bottom-0">
       <div className="w-full text-center">
         <div className="w-full justify-between sm:flex sm:items-center sm:justify-between">
           <FooterBrand

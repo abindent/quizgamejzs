@@ -11,33 +11,25 @@ generator client {
 // TEAM MODEL
 
 model Team {
-  id        String    @id @default(auto()) @map("_id") @quizdom.ObjectId
+  id        String   @id @default(auto()) @map("_id") @quizdom.ObjectId
   team      String
   member    Member[]
   category  String
   password  String
   school    String
-  messages  Message[]
-  role      String?   @default("TEAM")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  role      String?  @default("TEAM")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 type Member {
-  member1 String
-  member2 String
-  member3 String
-  member4 String
+  member1 MemberParam
+  member2 MemberParam
+  member3 MemberParam
+  member4 MemberParam
 }
 
-// MESSAGE MODEL
-model Message {
-  id        String   @id @default(auto()) @map("_id") @quizdom.ObjectId
-  message   String
-  type      String   @default("INTRASCHOOL_JR")
-  round     String?
-  qno       String?
-  team      Team?    @relation(fields: [team_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  team_id   String   @quizdom.ObjectId
-  createdAt DateTime @default(now())
+type MemberParam {
+  name  String
+  class String
 }

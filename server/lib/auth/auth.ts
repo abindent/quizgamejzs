@@ -19,10 +19,10 @@ export async function registerTeam(team: string, category: string, password: str
 }
 
 export async function verifyTeam(_id: string, password: string) {
-    const teamRecord = await prisma.team.findUnique({
+    const teamRecord = await prisma.team.findUniqueOrThrow({
         where: {
             id: _id,
-        },
+        }
     });
 
     if (!teamRecord) {
@@ -34,7 +34,15 @@ export async function verifyTeam(_id: string, password: string) {
         return null;
     }
 
-    return teamRecord;
+    const _finalRecord = {
+        id: teamRecord.id,
+        team: teamRecord.team,
+        members: {...teamRecord.member},
+        role: teamRecord.role,
+        school: teamRecord.school
+    }
+
+    return _finalRecord;
 }
 
 
@@ -43,8 +51,15 @@ export async function getTeamData(_tid: string){
         where: {
             id: _tid
         },
-        include: {
-            messages: true
-        }
     })
+
+    const _finalRecord = {
+        id: team_Data?.id,
+        team: team_Data?.team,
+        members: {...team_Data?.member},
+        role: team_Data?.role,
+        school: team_Data?.school
+    }
+
+    return _finalRecord;
 }
