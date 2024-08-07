@@ -7,8 +7,14 @@ import { v4 } from "uuid";
 // FLOWBITE
 import { Button, Clipboard, Label, Tabs, TextInput, Select } from "flowbite-react";
 
+// CONTEXT
+import { useAuthContext } from "@/context/state";
+import { useRouter } from "next/navigation";
+
 
 export default function Home() {
+
+    // INTERFACE
     interface Member {
         name: string | undefined;
         class: string | undefined
@@ -31,7 +37,8 @@ export default function Home() {
         _id: string | undefined;
         _t_password: string | undefined
     }
-
+     
+    // INITIAL STATE
     const initialState: RegistrationData = {
         password: v4(),
         members: {
@@ -62,9 +69,13 @@ export default function Home() {
         _id: "",
         _t_password: ""
     }
+
+    // USESTATE DEFINITION
     const [data, setData] = React.useState<RegistrationData>(initialState)
     const [loginData, setLoginData] = React.useState<LoginData>(loginInitialState)
+    const [loading, setLoading] = React.useState<Boolean>(false);
 
+    // INPUT AND SELECT CHANGE HANDLER
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { id, name, value } = e.target;
         const [memberKey, field] = name.split('.');
@@ -121,6 +132,7 @@ export default function Home() {
 
     }
 
+    // BUTTON VALIDATION
     function valiDateButton(type: string): boolean {
         if (type === "R") {
             return (
@@ -135,10 +147,35 @@ export default function Home() {
     const DataVerified = valiDateButton("R")
     const LoginVerified = valiDateButton("L")
 
+    // CONTEXT AND AUH
+    const context = useAuthContext();
+    const router = useRouter();
+    const {login, register} = context;
+    
 
-    React.useEffect(() => {
-        console.log(data)
-    })
+    async function handleRegister(e: React.SyntheticEvent<HTMLButtonElement>){
+         e.preventDefault();
+
+         const response = await register(data);
+         if(response.id){
+            localStorage.setItem("_id", response.id)
+            router.refresh()
+         }
+    }
+
+    async function handleLogin(e: React.SyntheticEvent<HTMLButtonElement>){
+        e.preventDefault();
+
+        const response = await login(localStorage.getItem("_id") as string);
+        if(response){
+            router.refresh()
+        }
+    }
+    
+    
+        React.useEffect(() => {
+            console.log(data)
+        })
 
     return (
         <Tabs aria-label="Default tabs" variant="fullWidth">

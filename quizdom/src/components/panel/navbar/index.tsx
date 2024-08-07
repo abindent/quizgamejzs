@@ -17,9 +17,8 @@ export default function AppBar() {
                 <NavbarLink href="/" active={Boolean(path.endsWith("/"))}>
                     Home
                 </NavbarLink>
-                <NavbarLink href="/quiz/question" active={Boolean(path.match("/quiz/question"))}>Questions</NavbarLink>
-                <NavbarLink href="/quiz/answer" active={Boolean(path.match("/quiz/answer"))}>Answers</NavbarLink>
-                <NavbarLink href="/admin/stats" active={Boolean(path.match("/admin/stats"))}>Statistics</NavbarLink>
+                <NavbarLink href="/about" active={Boolean(path.match("/about"))}>About</NavbarLink>
+                <NavbarLink href="/quiz" active={Boolean(path.match("/quiz"))}>QNA</NavbarLink>
             </NavbarCollapse>
             <DarkThemeToggle className="dark:text-gray-600" />
         </Navbar>

@@ -10,6 +10,9 @@ import type { Metadata } from "next";
 // LAYOUT
 import Layout from "@/layout/layout";
 
+// CSS
+import 'react-toastify/dist/ReactToastify.css';
+
 export const metadata: Metadata = {
   title: "Quizdom",
   description: "Annual quiz competition of Jalpaiguri Zilla School",
