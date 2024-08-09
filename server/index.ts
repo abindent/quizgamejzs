@@ -3,14 +3,16 @@ import express, { Express, Request, Response } from 'express';
 import { Server } from 'socket.io';
 import { createServer } from 'http';
 import { v4 as uuidv4 } from "uuid";
+import bodyParser from 'body-parser';
 import { registerTeam, verifyTeam, getTeamData } from './lib/auth/auth';
-
 const app: Express = express();
 const server = createServer(app);
 const port: string | number = process.env.PORT || 3001;
 
-app.use(express.static("public"));
+
+// APP
 app.use(express.json())
+
 
 // EJS SETUP
 app.set('view engine', 'ejs')
@@ -21,12 +23,7 @@ app.set('view engine', 'ejs')
 let mainComputerId: string;
 let buzzerPressed: boolean = false;
 
-const io: Server = new Server(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"]
-  }
-});
+const io: Server = new Server(server);
 
 io.engine.generateId = (req) => {
   return uuidv4(); // must be unique across all Socket.IO servers
@@ -70,10 +67,10 @@ io.on("connection", async (socket) => {
 
   socket.on('disconnect', () => {
     if (socket.id === mainComputerId) {
-        mainComputerId = "" ; // Reset main computer ID if it disconnects
+      mainComputerId = ""; // Reset main computer ID if it disconnects
     }
     console.log(`👤 Username : ${socket.id} got disconnected.`);
-});
+  });
 
 })
 
@@ -85,15 +82,26 @@ app.get("/", (req: Request, res: Response) => {
 app.post("/api/auth/create", async (req: Request, res: Response) => {
   const { team, category, password, school, members, role } = req.body;
 
-  const _team = await registerTeam(team, category, password, school, members, role);
-  res.json(_team)
+  const _team = await registerTeam(team, password, school, members, role);
+  res.json(_team);
 
 })
 
-app.post("/api/auth/login", async (req: Request, res: Response) => {
-  const { _id, password } = req.body;
-  const _team = await verifyTeam(_id, password);
-  res.json(_team)
+app.get("/api/auth/login/:id&:password", async (req: Request, res: Response) => {
+  const { id, password } = req.params;
+  try{
+    const _team = await verifyTeam(id, password);
+    if (_team?.id) {
+      res.json(_team);
+      console.log(_team?.id)
+    }
+    else {
+      res.send("Invalid Dataset");
+    }
+  } catch(e){
+    console.log(e);
+    res.send("Invalid Dataset");
+  }
 
 })
 
@@ -101,7 +109,6 @@ app.post("/api/auth/team", async (req: Request, res: Response) => {
   const { _id } = req.body;
   const _teamData = await getTeamData(_id);
   res.json(_teamData);
-
 })
 
 

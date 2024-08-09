@@ -18,7 +18,7 @@ export default function Layout({ children }: Readonly<{ children: React.ReactNod
     return (
         <AuthState>
             <Flowbite>
-               <ToastContainer position="top-right" limit={8} theme="colored" autoClose={false} draggable transition={Flip} />
+               <ToastContainer position="top-right" limit={8} theme="colored" autoClose={4000} draggable transition={Flip} />
                 <Navbar />
                 {children}
                 <Footer />
