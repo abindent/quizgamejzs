@@ -24,6 +24,7 @@ interface Team {
 
 interface ContextType {
     team: Team,
+    setTeam: React.Dispatch<React.SetStateAction<Team>>,
     login: (_id: string | null, password: string | null) => Promise<any>,
     fetchTeam: (_id: string) => Promise<any>,
     getSetTeam: (_id: string, _usr: Team) => Promise<boolean>
@@ -36,6 +37,6 @@ interface ContextType {
 
 const AuthContext : Context<ContextType> = createContext<ContextType>({} as ContextType);
 
-export type {Team};
+export type {Team, ContextType};
 export default AuthContext;
 

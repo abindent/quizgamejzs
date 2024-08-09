@@ -39,25 +39,20 @@ export function AuthState({ children }: { children: ReactNode }) {
     const host = process.env.NEXT_PUBLIC_BACKEND_API_URI as string;
     const [team, setTeam] = useState<Team>(initialState);
 
-    // FUNCTION TO SAVE DATA TO BOTH LOCALSTORAGE & COOKIE
-    const createCookiesToLocalStorage = (name: string, val: string) => {
-        localStorage.setItem(name, val);
-    };
 
 
     // UPDATE USER WITH JWT
     const login = async (_id: string | null, password: string | null) => {
-        const _req = await fetch(`${host}/api/auth/login?id=${_id}&password=${password}`, {
-            method: "GET",
-            mode: "no-cors",
+        const _req = await fetch(`${host}/api/auth/login`, {
+            method: "POST",
+            mode: "cors",
             headers: {
                 "Access-Control-Allow-Origin": "*",
             },
+            body: JSON.stringify({id: _id, password: password})
         })
         if (_req.ok) {
             const _response = await _req.json();
-            createCookiesToLocalStorage("_id", JSON.stringify(_response.id));
-            createCookiesToLocalStorage("_user", JSON.stringify(_response));
             setTeam(_response);
             return _response;
         } else {
@@ -70,16 +65,16 @@ export function AuthState({ children }: { children: ReactNode }) {
             method: "POST",
             mode: "cors",
             headers: {
+                "Access-Control-Allow-Origin": "*",
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ _id: _id }),
+            body: JSON.stringify({ id: _id }),
         });
 
         const response = await req.json();
 
         if (response._id) {
             setTeam(response);
-            createCookiesToLocalStorage("_id", JSON.stringify(response.id));
         }
         return response;
     }
@@ -96,7 +91,7 @@ export function AuthState({ children }: { children: ReactNode }) {
     }
 
     return (
-        <AuthContext.Provider value={{ team, login, fetchTeam, getSetTeam }}>
+        <AuthContext.Provider value={{ team, setTeam, login, fetchTeam, getSetTeam }}>
             {children}
         </AuthContext.Provider>
     );

@@ -3,11 +3,12 @@ import { hash, compare } from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-export async function registerTeam(team: string, password: string, school: string, members: Member, role: string) {
+export async function registerTeam(team: string, category: string, password: string, school: string, members: Member, role: string) {
     const hashedPassword = await hash(password, 10);
     return prisma.team.create({
         data: {
             team,
+            category,
             password: hashedPassword,
             school,
             member: members,
