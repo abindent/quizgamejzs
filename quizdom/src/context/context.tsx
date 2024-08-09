@@ -27,7 +27,7 @@ interface ContextType {
     setTeam: React.Dispatch<React.SetStateAction<Team>>,
     login: (_id: string | null, password: string | null) => Promise<any>,
     fetchTeam: (_id: string) => Promise<any>,
-    getSetTeam: (_id: string, _usr: Team) => Promise<boolean>
+    getSetTeam: (_usr: Team) => void
 
 }
 

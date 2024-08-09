@@ -37,6 +37,7 @@ export async function verifyTeam(_id: string, password: string) {
     const _finalRecord = {
         id: teamRecord.id,
         team: teamRecord.team,
+        category: teamRecord.category,
         members: {...teamRecord.member},
         role: teamRecord.role,
         school: teamRecord.school

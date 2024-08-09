@@ -47,7 +47,7 @@ export function AuthState({ children }: { children: ReactNode }) {
             method: "POST",
             mode: "cors",
             headers: {
-                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Origin": `${process.env.NEXT_PUBLIC_HOST_URI}`,
             },
             body: JSON.stringify({id: _id, password: password})
         })
@@ -65,7 +65,7 @@ export function AuthState({ children }: { children: ReactNode }) {
             method: "POST",
             mode: "cors",
             headers: {
-                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Origin": `${process.env.NEXT_PUBLIC_HOST_URI}`,
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ id: _id }),
@@ -79,15 +79,8 @@ export function AuthState({ children }: { children: ReactNode }) {
         return response;
     }
 
-    const getSetTeam = async (_id: string | null, _usr: Team | null) => {
-        if (_usr) {
-            setTeam(_usr)
-        }
-        else {
-            const response = await fetchTeam(_id);
-            setTeam(response)
-        }
-        return Boolean(team);
+    const getSetTeam = (_usr: Team) => {
+        setTeam(_usr);
     }
 
     return (

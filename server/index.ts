@@ -3,14 +3,20 @@ import express, { Express, Request, Response } from "express";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { v4 as uuidv4 } from "uuid";
-import cors from "cors";
+import cors, { CorsOptions } from "cors";
 import { registerTeam, verifyTeam, getTeamData } from "./lib/auth/auth";
 const app: Express = express();
 const server = createServer(app);
 const port: string | number = process.env.PORT || 3001;
 
+
+// CORS OPTION
+const corsOption : CorsOptions = {
+  origin: [ process.env.FRONTEND_HOST_URI || 'http://localhost:3000']
+}
+
 // APP
-app.use(cors());
+app.use(cors(corsOption));
 app.use(express.json());
 
 // EJS SETUP

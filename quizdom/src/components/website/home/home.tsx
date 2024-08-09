@@ -13,8 +13,6 @@ import {
 
 // CONTEXT
 import { useAuthContext } from "@/context/state";
-import { useRouter } from "next/navigation";
-
 // TOAST
 import { toast } from "react-toastify";
 
@@ -56,8 +54,7 @@ export default function Home() {
   const verified = valiDateButton();
 
   // CONTEXT AND AUH
-  const context = useAuthContext();
-  const router = useRouter();
+  const context = useAuthContext();;
   const { login } = context;
 
   async function handleLogin(e: React.SyntheticEvent<HTMLButtonElement>) {
@@ -67,12 +64,9 @@ export default function Home() {
       .then((res) => {
         if (res["id"]) {
           localStorage.setItem("_id", res["id"]);
-          localStorage.setItem("_usr", JSON.stringify(res));
+          localStorage.setItem("_user", JSON.stringify(res));
           toast.success("Successfully logged in.");
           setLoading(false);
-          setTimeout(() => {
-            router.refresh();
-          }, 3000);
         } else {
           toast.error("Failed to login.");
           setLoading(false);
