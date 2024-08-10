@@ -27,7 +27,9 @@ app.set("view engine", "ejs");
 let mainComputerId: string;
 let buzzerPressed: boolean = false;
 
-const io: Server = new Server(server);
+const io: Server = new Server(server, {
+  cors: corsOption
+});
 
 io.engine.generateId = (req) => {
   return uuidv4(); // must be unique across all Socket.IO servers
