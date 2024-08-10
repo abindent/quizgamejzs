@@ -9,11 +9,10 @@ const app: Express = express();
 const server = createServer(app);
 const port: string | number = process.env.PORT || 3001;
 
-
 // CORS OPTION
-const corsOption : CorsOptions = {
-  origin: [ process.env.FRONTEND_HOST_URI || 'http://localhost:3000']
-}
+const corsOption: CorsOptions = {
+  origin: [process.env.FRONTEND_HOST_URI || "http://localhost:3000"],
+};
 
 // APP
 app.use(cors(corsOption));
@@ -86,17 +85,42 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.post("/api/auth/create", async (req: Request, res: Response) => {
-  const { team, category, password, school, members, role } = req.body;
+  let body = "";
 
-  const _team = await registerTeam(
-    team,
-    category,
-    password,
-    school,
-    members,
-    role
-  );
-  res.json(_team);
+  // Collect data chunks
+  req.on("data", (chunk) => {
+    body += chunk;
+  });
+
+  // When all data is received
+  req.on("end", async () => {
+    try {
+      const parsedBody = JSON.parse(body); // Parse the collected body as JSON
+      const { team, category, password, school, members, role } = parsedBody;
+      const _team = await registerTeam(
+        team,
+        category,
+        password,
+        school,
+        members,
+        role
+      );
+      if (_team?.id) {
+        res.json(_team);
+      } else {
+        res.send("Invalid Dataset");
+      }
+    } catch (e) {
+      console.error("Error:", e);
+      res.status(400).send("Some Error Occured.");
+    }
+  });
+
+  // Handle errors
+  req.on("error", (err) => {
+    console.error("Error:", err);
+    res.status(500).send("Server Error");
+  });
 });
 
 app.post("/api/auth/login", async (req: Request, res: Response) => {
@@ -135,20 +159,28 @@ app.post("/api/auth/login", async (req: Request, res: Response) => {
 app.post("/api/auth/team", async (req: Request, res: Response) => {
   let body = "";
 
-  try {
-    const parsedBody = JSON.parse(body); // Parse the collected body as JSON
-    const { id } = parsedBody;
+  // Collect data chunks
+  req.on("data", (chunk) => {
+    body += chunk;
+  });
 
-    const _teamData = await getTeamData(id);
-    if (_teamData?.id) {
-      res.json(_teamData);
-    } else {
-      res.send("Invalid Dataset");
+  // When all data is received
+  req.on("end", async () => {
+    try {
+      const parsedBody = JSON.parse(body); // Parse the collected body as JSON
+      const { id } = parsedBody;
+
+      const _teamData = await getTeamData(id);
+      if (_teamData?.id) {
+        res.json(_teamData);
+      } else {
+        res.send("Invalid Dataset");
+      }
+    } catch (e) {
+      console.error("Error:", e);
+      res.status(400).send("Some Error Occured.");
     }
-  } catch (e) {
-    console.error("Error:", e);
-    res.status(400).send("Some Error Occured.");
-  }
+  });
 
   // Handle errors
   req.on("error", (err) => {
