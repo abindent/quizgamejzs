@@ -40,8 +40,25 @@ export function AuthState({ children }: { children: ReactNode }) {
     const [team, setTeam] = useState<Team>(initialState);
 
 
+    // CREATE USER
+    const register = async (data: object)=>{
+        const _req = await fetch(`${host}/api/auth/create`, {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                "Access-Control-Allow-Origin": `${process.env.NEXT_PUBLIC_HOST_URI}`,
+            },
+            body: JSON.stringify(data)
+        })
+        if (_req.ok) {
+            const _response = await _req.json();
+            return _response;
+        } else {
+            throw new Error(`${_req.status} : ${_req.statusText}`);
+        }
+    }
 
-    // UPDATE USER WITH JWT
+    // LOGIN USER WITH JWT
     const login = async (_id: string | null, password: string | null) => {
         const _req = await fetch(`${host}/api/auth/login`, {
             method: "POST",
@@ -60,6 +77,7 @@ export function AuthState({ children }: { children: ReactNode }) {
         }
     };
 
+    // FETCH USER (UNUSED)
     const fetchTeam = async (_id: string | null) => {
         const req = await fetch(host + "/api/auth/team", {
             method: "POST",
@@ -79,12 +97,13 @@ export function AuthState({ children }: { children: ReactNode }) {
         return response;
     }
 
+    // SET USER
     const getSetTeam = (_usr: Team) => {
         setTeam(_usr);
     }
 
     return (
-        <AuthContext.Provider value={{ team, setTeam, login, fetchTeam, getSetTeam }}>
+        <AuthContext.Provider value={{ team, setTeam, register, login, fetchTeam, getSetTeam }}>
             {children}
         </AuthContext.Provider>
     );

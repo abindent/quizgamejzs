@@ -4,11 +4,8 @@ import * as React from "react";
 // FLOWBITE
 import {
   Button,
-  Clipboard,
   Label,
-  Tabs,
   TextInput,
-  Select,
 } from "flowbite-react";
 
 // CONTEXT
@@ -63,7 +60,6 @@ export default function Home() {
     await login(data._id, data._t_password)
       .then((res) => {
         if (res["id"]) {
-          localStorage.setItem("_id", res["id"]);
           localStorage.setItem("_user", JSON.stringify(res));
           toast.success("Successfully logged in.");
           setLoading(false);

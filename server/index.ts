@@ -11,7 +11,7 @@ const port: string | number = process.env.PORT || 3001;
 
 // CORS OPTION
 const corsOption: CorsOptions = {
-  origin: [process.env.FRONTEND_HOST_URI || "http://localhost:3000"],
+  origin: "https://3000-abindent-quizgamejzs-9xks84prh15.ws-us115.gitpod.io",
 };
 
 // APP

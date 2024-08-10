@@ -4,13 +4,19 @@ import React from "react";
 import { ContextType } from "@/context/context";
 import { useAuthContext } from "@/context/state";
 
+// TOAST
+import {toast} from "react-toastify";
+
 export default function Logged() {
   const { team }: ContextType = useAuthContext();
   function logout (e: React.SyntheticEvent<HTMLButtonElement>){
       e.preventDefault();
       localStorage.removeItem("_id");
       localStorage.removeItem("_user");
-      window.location.reload();
+      toast.success("Successfully logged out.")
+      setTimeout(()=>{
+        window.location.reload();
+      }, 2000)
 
   }
   return (

@@ -70,6 +70,9 @@ export default function AppBar() {
         <NavbarLink href="/quiz" active={Boolean(path.match("/quiz"))}>
           QNA
         </NavbarLink>
+        <NavbarLink href="/register" active={Boolean(path.match("/register"))}>
+         Register
+        </NavbarLink>
       </NavbarCollapse>
       <DarkThemeToggle className="dark:text-gray-600" />
     </Navbar>
