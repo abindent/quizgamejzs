@@ -9,27 +9,34 @@ import useSocket from "@/context/socket";
 // CONTEXT
 import { useAuthContext } from "@/context/state";
 
+// TOAST
+import { toast } from "react-toastify";
+
 // LOGIN PAGE
 import LoginPage from "./login";
+import { ContextType } from "@/context/context";
 
 export default function Buzzer() {
-  const [isBuzzerPressed, setIsBuzzerPressed] = React.useState<
-    boolean | undefined
-  >(false);
-  const [winnerId, setWinnerId] = React.useState(null);
   const [isMainComputer, setIsMainComputer] = React.useState<
     boolean | undefined
   >(false); // Determine if this is the main computer
-  const socket = useSocket("https://3001-abindent-quizgamejzs-9xks84prh15.ws-us115.gitpod.io");
-  const { team } = useAuthContext();
+  const socket = useSocket(
+    "https://3001-abindent-quizgamejzs-9xks84prh15.ws-us115.gitpod.io"
+  );
+  const { team }: ContextType = useAuthContext();
 
   React.useEffect(() => {
-    socket.on("buzzerPressed", (id) => {
-      setWinnerId(id);
-      setIsBuzzerPressed(true);
+    socket.on("buzzerPressed", (obj) => {
       if (isMainComputer) {
-        alert("Buzzer pressed by user: " + id);
-        // Play sound here if this is the main computer
+        toast.info(`${obj["_team_name"]} has pressed the buzzer`, {
+          autoClose: false,
+        });
+        handleReset();
+      }
+    });
+    socket.on("mainComLoginComp", () => {
+      if (isMainComputer) {
+        toast.success("You are logged as Main Computer.");
       }
     });
 
@@ -39,13 +46,11 @@ export default function Buzzer() {
   }, [socket, isMainComputer]);
 
   const handleBuzzerPress = () => {
-    socket.emit("pressBuzzer");
+    socket.emit("pressBuzzer", team["team"]);
   };
 
   const handleReset = () => {
     socket.emit("resetBuzzer");
-    setIsBuzzerPressed(false);
-    setWinnerId(null);
   };
 
   if (team && team.role === "ADMIN") {
@@ -56,11 +61,12 @@ export default function Buzzer() {
     <div>
       {team && (
         <div>
-          <button onClick={handleBuzzerPress} disabled={isBuzzerPressed}>
+          <button
+            className="p-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+            onClick={handleBuzzerPress}
+          >
             Press Buzzer
           </button>
-          {winnerId && <p>User {winnerId} pressed the buzzer first!</p>}
-          <button onClick={handleReset}>Reset Buzzer</button>
         </div>
       )}
       {!team && <div>Loading..</div>}

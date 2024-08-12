@@ -9,6 +9,7 @@ import {toast} from "react-toastify";
 
 export default function Logged() {
   const { team }: ContextType = useAuthContext();
+  
   function logout (e: React.SyntheticEvent<HTMLButtonElement>){
       e.preventDefault();
       localStorage.removeItem("_id");

@@ -29,7 +29,6 @@ export default function AppBar() {
     if (typeof window !== "undefined") {
       if (!team.id && localStorage.getItem("_user")) {
         const _usr = JSON.parse(localStorage.getItem("_user") as string);
-        console.log(_usr);
         const _team: Team = {
           id: _usr.id,
           team: _usr.team,

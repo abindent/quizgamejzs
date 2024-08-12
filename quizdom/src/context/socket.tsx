@@ -8,7 +8,7 @@ const useSocket = (url: string) => {
         return () => {
             socket.disconnect();
         };
-    }, []);
+    }, [socket]);
 
     return socket;
 };

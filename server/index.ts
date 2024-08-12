@@ -12,6 +12,8 @@ const port: string | number = process.env.PORT || 3001;
 // CORS OPTION
 const corsOption: CorsOptions = {
   origin: "https://3000-abindent-quizgamejzs-9xks84prh15.ws-us115.gitpod.io",
+  methods: ["GET", "HEAD", "POST"],
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
 // APP
@@ -36,20 +38,16 @@ io.engine.generateId = (req) => {
 };
 
 io.engine.on("connection_error", (err) => {
-  console.log(err.req); // the request object
-  console.log(err.code); // the error code, for example 1
-  console.log(err.message); // the error message, for example "Session ID unknown"
-  console.log(err.context); // some additional error context
+  // console.log(err.req); // the request object
+  // console.log(err.code); // the error code, for example 1
+  // console.log(err.message); // the error message, for example "Session ID unknown"
+  // console.log(err.context); // some additional error context
 });
 
 io.on("connection", async (socket) => {
-  socket.on("connect", (username: string) => {
-    socket.broadcast.emit("userconnected", () => {
-      const id = socket.id;
-      return { username, id };
-    });
+  socket.on("connect", () => {
     console.log(
-      `✅ Connected to Quizdom.🎧 Listening to port ${port}. 👤 Username : ${username} has joined`
+      `✅ Connected to Quizdom.🎧 Listening to port ${port}. 👤 A User has joined. Socket ID: ${socket.id}.`
     );
   });
 
@@ -57,14 +55,15 @@ io.on("connection", async (socket) => {
   socket.on("identifyMainComputer", () => {
     mainComputerId = socket.id;
     console.log("💻 Main computer identified:", socket.id);
+    io.emit('mainComLoginComp', 'Login');
   });
 
   // LISTEN TO BUZZER EVENT
-  socket.on("pressBuzzer", () => {
+  socket.on("pressBuzzer", (_team_name: string | undefined) => {
     if (!buzzerPressed) {
       buzzerPressed = true;
       // Broadcast to all clients that the buzzer was pressed
-      io.emit("buzzerPressed", { id: socket.id });
+      io.emit("buzzerPressed", { id: socket.id, _team_name: _team_name });
     }
   });
 
