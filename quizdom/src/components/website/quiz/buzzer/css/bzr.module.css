@@ -1,0 +1,49 @@
+.base{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.08);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.buzzer{
+    height: 60%;
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bzr{
+    font-size: 50px;
+    padding: 10% 10%;
+    background-color: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.4) url("/_asset/static/buzzer.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: #070941;
+    text-transform: uppercase;
+    -webkit-text-stroke: 1px #fff;
+    border: none;
+}
+
+.bzr:hover{
+    transition: 0.5s;
+    padding: 12% 12%;
+    background: #688dbb36;
+    color: black;
+    border: none;
+    font-size: 60px;
+    box-shadow: black;
+}
+
+.bg_bzr{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
+}

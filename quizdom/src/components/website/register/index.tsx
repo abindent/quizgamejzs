@@ -3,7 +3,7 @@
 import * as React from "react";
 
 // NEXTJS
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 
 // FLOWBITE
 import { Button, Clipboard, Label, TextInput, Select } from "flowbite-react";
@@ -117,7 +117,6 @@ export default function Home() {
 
   // CONTEXT AND AUH
   const { register } = useAuthContext();
-  const router = useRouter();
 
   async function handleRegister(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -129,8 +128,8 @@ export default function Home() {
           toast.success("Successfully created account.");
           setLoading(false);
           setTimeout(() => {
-            router.push("/");
             toast.info("Log in to your account.");
+            redirect("/");
           }, 3000);
         } else {
           toast.error("Failed to login.");
@@ -146,8 +145,8 @@ export default function Home() {
   React.useEffect(() => {
     if (typeof window !== "undefined") {
       if (localStorage.getItem("_user")) {
-        router.push("/");
         toast.info("You are authenticated.");
+        redirect("/");
       }
     }
   });
