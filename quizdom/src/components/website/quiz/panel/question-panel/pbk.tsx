@@ -22,13 +22,13 @@ const nunito = Nunito({
 
 export default function Panel({ category }: { category: string }) {
   function genURL(q_no: string) {
-    return `/quiz/${category}/round/point-black/${q_no}`;
+    return `/quiz/${category}/round/point-blank/${q_no}`;
   }
   return (
     <div className={nunito.className}>
       <section className={styles.oyo_qns}>
         <h1 className={styles.oyo}>
-          <FontAwesomeIcon icon={faCube} /> Point Black
+          <FontAwesomeIcon icon={faCube} /> Point Blank
         </h1>
         <div className={styles.qns}>
           <h3 className={styles.ti}>Question - I </h3>

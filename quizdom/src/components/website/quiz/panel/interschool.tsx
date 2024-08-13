@@ -63,9 +63,9 @@ export default function Panel() {
             </div></Link>
         </div>
 
-        <div className={styles.rounds}><Link href="/quiz/interschool/round/point-black">
+        <div className={styles.rounds}><Link href="/quiz/interschool/round/point-blank">
             <div className={styles.first}>
-                <img src="/_asset/static/pointblack.jpg" alt="logo" />
+                <img src="/_asset/static/pointblank.jpg" alt="logo" />
             </div>
             <div className={styles.second}>
                 <h1>Point Blank</h1>

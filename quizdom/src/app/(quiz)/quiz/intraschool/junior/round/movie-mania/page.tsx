@@ -1,9 +1,9 @@
 import { Metadata } from 'next';
-import Panel from '@/components/website/quiz/panel/question-panel/cc';
+import Panel from '@/components/website/quiz/panel/question-panel/mm';
 
 // METADATA
 export const metadata: Metadata = {
-    title: "Connections - Intraschool Junior",
+    title: "Movie Mania - Intraschool Junior",
     description: "Annual quiz competition of Jalpaiguri Zilla School",
   };
 

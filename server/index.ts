@@ -108,6 +108,7 @@ app.post("/api/auth/create", async (req: Request, res: Response) => {
       );
       if (_team?.id) {
         res.json(_team);
+        console.log(_team.id)
       } else {
         res.send("Invalid Dataset");
       }

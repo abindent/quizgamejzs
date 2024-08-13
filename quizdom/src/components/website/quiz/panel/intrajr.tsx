@@ -38,7 +38,6 @@ export default function Panel() {
               </div>
             </Link>
           </div>
-
           <div className={styles.rounds}>
             <Link href="/quiz/intraschool/junior/round/pounce-bounce">
               <div className={styles.first}>
@@ -51,16 +50,17 @@ export default function Panel() {
           </div>
 
           <div className={styles.rounds}>
-            <Link href="/quiz/intraschool/junior/round/connections">
+            <Link href="/quiz/intraschool/junior/round/movie-mania">
               <div className={styles.first}>
-                <img src="/_asset/static/connection.jpg" alt="" />
+                <img src="/_asset/static/movie.jpg" alt="logo" />
               </div>
               <div className={styles.second}>
-                <h1>Connections</h1>
+                <h1>Movie Mania</h1>
               </div>
             </Link>
           </div>
-
+        
+          
           <div className={styles.rounds}>
             <Link href="/quiz/intraschool/junior/round/on-your-fingertips">
               <div className={styles.first}>
