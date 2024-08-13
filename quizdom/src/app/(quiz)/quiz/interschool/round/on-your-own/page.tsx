@@ -1,14 +1,14 @@
 import { Metadata } from 'next';
-import Panel from '@/components/website/quiz/panel/intrajr';
+import Panel from '@/components/website/quiz/panel/question-panel/oyo';
 
 // METADATA
 export const metadata: Metadata = {
-    title: "Intraschool Junior - Quizdom",
+    title: "On Your Own - Interschool",
     description: "Annual quiz competition of Jalpaiguri Zilla School",
   };
 
 export default function Page() {
   return (
-    <div><Panel/></div>
+    <div><Panel category="interschool" /></div>
   )
 }

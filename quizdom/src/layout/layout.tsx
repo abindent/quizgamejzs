@@ -14,7 +14,7 @@ import { AuthState } from "@/context/state";
 // COMPONENTS
 import Navbar from "@/components/panel/navbar";
 import Footer from "@/components/panel/footer";
-import Loader from "@/components/website/loader/loader";
+import Loader from "@/components/panel/loader/loader";
 
 export default function Layout({
   children,

@@ -3,8 +3,6 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-// ALERT
-import { toast } from "react-toastify";
 
 // CONTEXT
 import { useAuthContext } from "@/context/state";

@@ -13,7 +13,7 @@ export default function Loader() {
       <div className={styles.container}>
         <div className={styles.loader}>
           <div>
-            <Image alt="Icon" src="/icon.png" width={50} height={50} />
+            <Image alt="Icon" src="/icon.png" width={100} height={100} />
             <div className={styles.ring}></div>
           </div>
         </div>
