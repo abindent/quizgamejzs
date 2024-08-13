@@ -37,7 +37,7 @@ export default function Panel({ category }: { category: string }) {
         <button className={`${styles.option} ${styles.option_c}`}><Link href={genURL("history")}> History </Link></button>
         <button className={`${styles.option} ${styles.option_d}`}><Link href={genURL("world")}> World </Link></button>
         <button className={`${styles.option} ${styles.option_e}`}><Link href={genURL("literature")}> Literature </Link></button>
-        <button className={`${styles.option} ${styles.option_f}`}><Link href={genURL("mythology")}> Mytology </Link></button>
+        <button className={`${styles.option} ${styles.option_f}`}><Link href={genURL("mythology")}> Mythology </Link></button>
         <button className={`${styles.option} ${styles.option_g}`}><Link href={genURL("defence")}> Defence </Link></button>
         <button className={`${styles.option} ${styles.option_h}`}><Link href={genURL("astronomy")}> Astronomy </Link></button>
     </div>
