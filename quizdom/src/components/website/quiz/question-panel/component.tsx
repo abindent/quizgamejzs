@@ -62,9 +62,7 @@ export default function Component({
           </div>
           <audio ref={audioRef} controls hidden>
             <source
-              src={
-                "https://upload.wikimedia.org/wikipedia/en/transcoded/2/2f/Celine_Dion_-_My_Heart_Will_Go_On.ogg/Celine_Dion_-_My_Heart_Will_Go_On.ogg.mp3"
-              }
+              src={URI}
               type="audio/mp3"
             />
           </audio>
