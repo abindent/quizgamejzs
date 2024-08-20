@@ -22,7 +22,7 @@ const nunito = Nunito({
 
 export default function Panel({ category }: { category: string }) {
   function genURL(q_no: string) {
-    return `/quiz/${category}/round/on-your-fingertips/${q_no}`;
+    return `/quiz/${category}/round/on-your-fingertips/${q_no}?type=img`;
   }
   return (
     <div className={nunito.className}>
