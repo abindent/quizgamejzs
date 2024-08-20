@@ -12,7 +12,7 @@ import styles from "./css/panel.module.css";
 
 // FONT
 const nunito = Nunito({
-  subsets: ["cyrillic"],
+  subsets: ["latin"],
   variable: "--font-nunito",
 });
 
