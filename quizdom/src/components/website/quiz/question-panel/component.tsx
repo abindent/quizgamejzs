@@ -43,7 +43,7 @@ export default function Component({
   return (
     <>
       {type === "img" && <img alt={alt} src={URI} className={styles.img} />}
-      {type === "video" && <video src={URI} className={styles.img} />}
+      {type === "video" && <video controls src={URI} className={styles.img} />}
       {type === "audio" && (
         <div>
           <img
