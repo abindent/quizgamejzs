@@ -23,6 +23,7 @@ export default function Component({
   const audioRef = React.useRef<HTMLAudioElement>(null);
   const [isplaying, setIsPlaying] = React.useState<boolean>(false);
 
+
   const handlePlay = (e: React.SyntheticEvent) => {
     e.preventDefault();
     if (audioRef.current) {
@@ -38,6 +39,7 @@ export default function Component({
     }
   };
 
+  
   return (
     <>
       {type === "img" && <img alt={alt} src={URI} className={styles.img} />}
@@ -47,7 +49,7 @@ export default function Component({
           <img
           style={{marginBottom: "3%"}}
             alt={alt}
-            src={"/_asset/static/music.avif"}
+            src={isplaying ? "/_asset/static/sound-wave.gif" : "/_asset/static/music.avif"}
             className={styles.img}
           />
           <div className={styles.button}>
