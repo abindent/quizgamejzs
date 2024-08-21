@@ -80,19 +80,13 @@ export default function Panel({ category }: { category: string }) {
         </div>
         <div className={styles.qns}>
           <h3 className={styles.ti}>Question - IX </h3>
-          <Link href={genURL("9", "audio")}>
+          <Link href={genURL("9", "video")}>
             <button className={styles.qns_ans}>View</button>
           </Link>
         </div>
         <div className={styles.qns}>
           <h3 className={styles.ti}>Question - X </h3>
           <Link href={genURL("10", "video")}>
-            <button className={styles.qns_ans}>View</button>
-          </Link>
-        </div>
-        <div className={styles.qns}>
-          <h3 className={styles.ti}>Question - XI </h3>
-          <Link href={genURL("11", "video")}>
             <button className={styles.qns_ans}>View</button>
           </Link>
         </div>
