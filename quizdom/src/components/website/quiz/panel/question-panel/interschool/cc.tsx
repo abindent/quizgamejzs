@@ -8,7 +8,7 @@ import { Nunito } from "next/font/google";
 import Link from "next/link";
 
 // CSS
-import styles from "./css/q.module.css";
+import styles from "../css/q.module.css";
 
 // FONTAWESOME
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

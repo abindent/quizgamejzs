@@ -8,7 +8,7 @@ import { Nunito } from "next/font/google";
 import Link from "next/link";
 
 // CSS
-import styles from "./css/oyf.module.css";
+import styles from "../../css/oyf.module.css";
 
 // FONTAWESOME
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,7 +32,7 @@ export default function Panel({ category }: { category: string }) {
             <div className={styles.next_btn}><Link href="/quiz" ><button>Go to Main Page</button></Link></div>
         </section>
     <div className={styles.main}>
-        <button className={`${styles.option} ${styles.option_a}`}><Link href={genURL("music", "audio")}> Music </Link></button>
+        <button className={`${styles.option} ${styles.option_a}`}><Link href={genURL("music", "visualaudio")}> Music </Link></button>
         <button className={`${styles.option} ${styles.option_b}`}><Link href={genURL("sports", "img")}> Sports </Link></button>
         <button className={`${styles.option} ${styles.option_c}`}><Link href={genURL("history", "img")}> History </Link></button>
         <button className={`${styles.option} ${styles.option_d}`}><Link href={genURL("world", "img")}> World </Link></button>

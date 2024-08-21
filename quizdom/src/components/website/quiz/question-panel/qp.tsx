@@ -58,9 +58,8 @@ export default function PointBlank({
   // SHOW NEXT
   function getNextURL(qno: string, type: string | undefined) {
     if (qno !== limit) {
-      return path.replace(`${qno}`, `${Number(qno)+ 1}?type=${type}`);
-    }
-    else{
+      return path.replace(`${qno}`, `${Number(qno) + 1}?type=${type}`);
+    } else {
       setNextDisabled(!nextdisabled);
       return ``;
     }
@@ -70,8 +69,7 @@ export default function PointBlank({
   function getPrevURL(qno: string, type: string | undefined) {
     if (Number(qno) !== 1) {
       return path.replace(`${qno}`, `${Number(qno) - 1}?type=${type}`);
-    }
-    else{
+    } else {
       setPrevDisabled(!prevdisabled);
       return ``;
     }
@@ -87,15 +85,68 @@ export default function PointBlank({
   }
   return (
     <div>
-      <div className={styles.container}>
-        {!showAns && <Component alt="img" URI={QURI} type={type} />}
-        {showAns && <Component alt="img" URI={AURI} type={type} />}
+      <div className={styles.masterContainer}>
+        {!type.startsWith("visual") && (
+          <>
+            {!showAns && <Component alt="img" URI={QURI} type={type} />}
+            {showAns && <Component alt="img" URI={AURI} type={type} />}
+          </>
+        )}
+        {type.match("visualaudio") && !showAns && (
+          <Component
+            alt="img"
+            URI={`/_asset/quiz/${category}/img/${round}-${qno}.png`}
+            type={type}
+            vURI={`/_asset/quiz/${category}/audio/${round}-${qno}.mp3`}
+          />
+        )}
+        {type.match("visualaudio") && showAns && (
+          <Component
+            alt="img"
+            URI={`/_asset/quiz/${category}/img/${round}-ans-${qno}.png`}
+            type={type}
+          />
+        )}
+
+        {type.match("visualvideoans") && !showAns && (
+          <Component
+            alt="img"
+            URI={`/_asset/quiz/${category}/img/${round}-${qno}.png`}
+            type={type}
+            vURI={`/_asset/quiz/${category}/video/${round}-${qno}.mp4`}
+          />
+        )}
+        {type.match("visualvideoans") && showAns && (
+          <Component
+            alt="img"
+            URI={`/_asset/quiz/${category}/img/${round}-ans-${qno}.png`}
+            vURI={`/_asset/quiz/${category}/video/${round}-ans-${qno}.mp4`}
+            type={type}
+          />
+        )}
+
         <div className={styles.button}>
-          <button disabled={prevdisabled} className={styles.btn} onClick={()=>{router.push(getPrevURL(qno, ans.type))}}>Show Previous</button>
+          <button
+            disabled={prevdisabled}
+            className={styles.btn}
+            onClick={() => {
+              router.push(getPrevURL(qno, ans.type));
+            }}
+          >
+            Show Previous
+          </button>
           <button className={styles.btn} onClick={ShowAns}>
             Show {showAns ? "Question" : "Answer"}
           </button>
-          <button disabled={nextdisabled} className={styles.btn} onClick={()=>{router.push(getNextURL(qno, ans.type))}} >Show Next</button>
+          <button
+            disabled={nextdisabled}
+            className={styles.btn}
+            onClick={() => {
+              router.push(getNextURL(qno, ans.type));
+            }}
+          >
+            Show Next
+          </button>
         </div>
       </div>
     </div>

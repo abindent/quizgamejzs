@@ -38,16 +38,6 @@ export default function Panel() {
               </div>
             </Link>
           </div>
-          <div className={styles.rounds}>
-            <Link href="/quiz/intraschool/junior/round/pounce-bounce">
-              <div className={styles.first}>
-                <img src="/_asset/static/bounce.jpg" alt="logo" />
-              </div>
-              <div className={styles.second}>
-                <h1>Pounce - Bounce</h1>
-              </div>
-            </Link>
-          </div>
 
           <div className={styles.rounds}>
             <Link href="/quiz/intraschool/junior/round/movie-mania">

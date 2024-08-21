@@ -8,7 +8,7 @@ import { Nunito } from "next/font/google";
 import Link from "next/link";
 
 // CSS
-import styles from "./css/q.module.css";
+import styles from "../../css/q.module.css";
 
 // FONTAWESOME
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,13 +22,13 @@ const nunito = Nunito({
 
 export default function Panel({ category }: { category: string }) {
   function genURL(q_no: string) {
-    return `/quiz/${category}/round/point-blank/${q_no}`;
+    return `/quiz/${category}/round/on-your-own/${q_no}?type=img`;
   }
   return (
     <div className={nunito.className}>
       <section className={styles.oyo_qns}>
         <h1 className={styles.oyo}>
-          <FontAwesomeIcon icon={faCube} /> Point Blank
+          <FontAwesomeIcon icon={faCube} /> On Your Own
         </h1>
         <div className={styles.qns}>
           <h3 className={styles.ti}>Question - I </h3>
@@ -75,54 +75,6 @@ export default function Panel({ category }: { category: string }) {
         <div className={styles.qns}>
           <h3 className={styles.ti}>Question - VIII </h3>
           <Link href={genURL("8")}>
-            <button className={styles.qns_ans}>View</button>
-          </Link>
-        </div>
-        <div className={styles.qns}>
-          <h3 className={styles.ti}>Question - IX </h3>
-          <Link href={genURL("9")}>
-            <button className={styles.qns_ans}>View</button>
-          </Link>
-        </div>
-        <div className={styles.qns}>
-          <h3 className={styles.ti}>Question - X </h3>
-          <Link href={genURL("10")}>
-            <button className={styles.qns_ans}>View</button>
-          </Link>
-        </div>
-        <div className={styles.qns}>
-          <h3 className={styles.ti}>Question - XI </h3>
-          <Link href={genURL("11")}>
-            <button className={styles.qns_ans}>View</button>
-          </Link>
-        </div>
-        <div className={styles.qns}>
-          <h3 className={styles.ti}>Question - XII </h3>
-          <Link href={genURL("12")}>
-            <button className={styles.qns_ans}>View</button>
-          </Link>
-        </div>
-        <div className={styles.qns}>
-          <h3 className={styles.ti}>Question - XIII </h3>
-          <Link href={genURL("13")}>
-            <button className={styles.qns_ans}>View</button>
-          </Link>
-        </div>
-        <div className={styles.qns}>
-          <h3 className={styles.ti}>Question - XIV </h3>
-          <Link href={genURL("14")}>
-            <button className={styles.qns_ans}>View</button>
-          </Link>
-        </div>
-        <div className={styles.qns}>
-          <h3 className={styles.ti}>Question - XV </h3>
-          <Link href={genURL("15")}>
-            <button className={styles.qns_ans}>View</button>
-          </Link>
-        </div>
-        <div className={styles.qns}>
-          <h3 className={styles.ti}>Question - XVI </h3>
-          <Link href={genURL("16")}>
             <button className={styles.qns_ans}>View</button>
           </Link>
         </div>
