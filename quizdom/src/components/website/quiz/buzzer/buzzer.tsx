@@ -50,6 +50,7 @@ export default function Buzzer() {
 
   const handleBuzzerPress = () => {
     socket.emit("pressBuzzer", team["team"]);
+    toast.info("Presses the buzzer")
   };
 
   const handleReset = () => {
