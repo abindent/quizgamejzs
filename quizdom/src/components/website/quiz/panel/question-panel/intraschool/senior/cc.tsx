@@ -21,8 +21,8 @@ const nunito = Nunito({
 });
 
 export default function Panel({ category }: { category: string }) {
-  function genURL(q_no: string) {
-    return `/quiz/${category}/round/connections/${q_no}`;
+  function genURL(q_no: string, type?: string) {
+    return `/quiz/${category}/round/connections/${q_no}?type=${type}`;
   }
   return (
     <div className={nunito.className}>
@@ -32,25 +32,25 @@ export default function Panel({ category }: { category: string }) {
         </h1>
         <div className={styles.qns}>
           <h3 className={styles.ti}>Question - I </h3>
-          <Link href={genURL("1")}>
+          <Link href={genURL("1", "img")}>
             <button className={styles.qns_ans}>View</button>
           </Link>
         </div>
         <div className={styles.qns}>
           <h3 className={styles.ti}>Question - II </h3>
-          <Link href={genURL("2")}>
+          <Link href={genURL("2", "img")}>
             <button className={styles.qns_ans}>View</button>
           </Link>
         </div>
         <div className={styles.qns}>
           <h3 className={styles.ti}>Question - III </h3>
-          <Link href={genURL("3")}>
+          <Link href={genURL("3", "img")}>
             <button className={styles.qns_ans}>View</button>
           </Link>
         </div>
         <div className={styles.qns}>
           <h3 className={styles.ti}>Question - IV </h3>
-          <Link href={genURL("4")}>
+          <Link href={genURL("4", "img")}>
             <button className={styles.qns_ans}>View</button>
           </Link>
         </div>
@@ -58,7 +58,7 @@ export default function Panel({ category }: { category: string }) {
           <h3 className={styles.ti}>
             <FontAwesomeIcon icon={faCube} /> Connection{" "}
           </h3>
-          <Link href={genURL("answer")}>
+          <Link href={genURL("answer", "img")}>
             <button className={styles.qns_ans}>Connection</button>
           </Link>
         </div>

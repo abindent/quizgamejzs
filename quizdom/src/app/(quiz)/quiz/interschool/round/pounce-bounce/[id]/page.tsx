@@ -15,11 +15,11 @@ export default function Page() {
     <div>
       <Panel
         category="interschool"
-        round={"pbk"}
+        round={"pnb"}
         qno={`${id}`}
         type={`${type}`}
-        limit={"16"}
-        key={"pbk"}
+        limit={"8"}
+        key={"pnb"}
         path={path}
       />
     </div>

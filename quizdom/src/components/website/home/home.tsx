@@ -9,6 +9,7 @@ import {
 } from "flowbite-react";
 
 // CONTEXT
+import { ContextType } from "@/context/context";
 import { useAuthContext } from "@/context/state";
 // TOAST
 import { toast } from "react-toastify";
@@ -50,9 +51,11 @@ export default function Home() {
 
   const verified = valiDateButton();
 
-  // CONTEXT AND AUH
-  const context = useAuthContext();;
-  const { login } = context;
+  // CONTEXT AND AUTH
+  const context = useAuthContext();
+  const { login } : ContextType = context;
+
+  
 
   async function handleLogin(e: React.SyntheticEvent<HTMLButtonElement>) {
     e.preventDefault();

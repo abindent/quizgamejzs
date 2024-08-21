@@ -3,23 +3,23 @@
 import React from "react";
 
 // NEXT
-import { useParams, usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useParams, useSearchParams } from "next/navigation";
 import Panel from "@/components/website/quiz/question-panel/qp";
 
 export default function Page() {
-  const { id } = useParams();
   const path = usePathname();
+  const { id } = useParams();
   const sparam = useSearchParams();
   const type = sparam.get("type");
   return (
     <div>
       <Panel
-        category="interschool"
-        round={"pbk"}
+        category="intraschool/senior"
+        round={"oyf"}
         qno={`${id}`}
         type={`${type}`}
-        limit={"16"}
-        key={"pbk"}
+        key={"oyf"}
+        limit={"8"}
         path={path}
       />
     </div>
