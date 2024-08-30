@@ -12,7 +12,6 @@
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "axios": "^1.7.3",
     "dd": "^0.26.0",
     "flowbite": "^2.4.1",
     "flowbite-react": "^0.10.1",
@@ -26,7 +25,6 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0",
     "@types/node": "^20",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18",

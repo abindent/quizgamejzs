@@ -61,11 +61,8 @@ export default function AppBar() {
         <NavbarLink href="/" active={Boolean(path.endsWith("/"))}>
           Home
         </NavbarLink>
-        <NavbarLink href="/about" active={Boolean(path.match("/about"))}>
-          About
-        </NavbarLink>
-        <NavbarLink href="/quiz" active={Boolean(path.match("/quiz"))}>
-          QNA
+        <NavbarLink href="/quiz/buzzer" active={Boolean(path.match("/quiz"))}>
+          Buzzer
         </NavbarLink>
         <NavbarLink href="/register" active={Boolean(path.match("/register"))}>
          Register
