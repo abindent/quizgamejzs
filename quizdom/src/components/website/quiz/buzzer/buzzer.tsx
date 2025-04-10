@@ -7,7 +7,7 @@ import * as React from "react";
 import useSocket from "@/context/socket";
 
 // CONTEXT
-import { useAuthContext } from "@/context/state";
+import { useAuthContext } from "@/context/auth/state";
 
 // CSS
 import styles from "./css/bzr.module.css";

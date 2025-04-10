@@ -9,7 +9,7 @@ import { Flowbite } from "flowbite-react";
 import { ToastContainer, Flip } from "react-toastify";
 
 // CONTEXT
-import { AuthState } from "@/context/state";
+import { AuthState } from "@/context/auth/state";
 
 // COMPONENTS
 import Navbar from "@/components/panel/navbar";

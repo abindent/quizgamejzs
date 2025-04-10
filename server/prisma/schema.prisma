@@ -9,7 +9,6 @@ generator client {
 }
 
 // TEAM MODEL
-
 model Team {
   id        String   @id @default(auto()) @map("_id") @quizdom.ObjectId
   team      String
@@ -20,6 +19,8 @@ model Team {
   role      String?  @default("TEAM")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  // Add relation to BuzzerState
+  buzzerPresses BuzzerState[]
 }
 
 type Member {
@@ -32,4 +33,17 @@ type Member {
 type MemberParam {
   name  String
   class String
+}
+
+// BUZZER STATE MODEL
+model BuzzerState {
+  id        String   @id @default(auto()) @map("_id") @quizdom.ObjectId
+  isPressed Boolean  @default(false)
+  teamId    String?  @quizdom.ObjectId
+  team      Team?    @relation(fields: [teamId], references: [id])
+  pressedAt DateTime @default(now())
+  round     Int      @default(1)
+  questionNumber Int  @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

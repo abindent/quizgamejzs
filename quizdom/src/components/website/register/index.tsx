@@ -9,7 +9,7 @@ import { redirect } from "next/navigation";
 import { Button, Clipboard, Label, TextInput, Select } from "flowbite-react";
 
 // CONTEXT
-import { useAuthContext } from "@/context/state";
+import { useAuthContext } from "@/context/auth/state";
 
 // UUID
 import { v4 } from "uuid";

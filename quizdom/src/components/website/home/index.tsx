@@ -3,7 +3,7 @@ import * as React from "react";
 
 import HomePage from "./home";
 import Logged from "./logged";
-import { useAuthContext } from "@/context/state";
+import { useAuthContext } from "@/context/auth/state";
 import { ContextType } from "@/context/context";
 
 export default function Home() {

@@ -14,7 +14,7 @@ import Component from "./component";
 
 // CONTEXT
 import { ContextType } from "@/context/context";
-import { useAuthContext } from "@/context/state";
+import { useAuthContext } from "@/context/auth/state";
 
 export default function PointBlank({
   category,

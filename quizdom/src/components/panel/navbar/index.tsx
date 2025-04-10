@@ -5,7 +5,7 @@ import Link from "next/link";
 
 
 // CONTEXT
-import { useAuthContext } from "@/context/state";
+import { useAuthContext } from "@/context/auth/state";
 import { Team, ContextType } from "@/context/context";
 
 // FLOWBITE

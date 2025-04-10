@@ -10,7 +10,7 @@ import {
 
 // CONTEXT
 import { ContextType } from "@/context/context";
-import { useAuthContext } from "@/context/state";
+import { useAuthContext } from "@/context/auth/state";
 // TOAST
 import { toast } from "react-toastify";
 
