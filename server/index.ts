@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { v4 as uuidv4 } from "uuid";
 import cors, { CorsOptions } from "cors";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "./prisma/prisma/client";
 import { registerTeam, verifyTeam, getTeamData } from "./lib/auth/auth";
 
 const prisma = new PrismaClient();

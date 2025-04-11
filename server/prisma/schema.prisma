@@ -6,6 +6,7 @@ datasource quizdom {
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["relationJoins"]
+  output = "./prisma"
 }
 
 // TEAM MODEL
@@ -31,12 +32,4 @@ type Member {
 type MemberParam {
   name  String
   class String
-}
-
-// BUZZER STATE MODEL
-model GlobalBuzzer {
-  id        String    @id @default("global") @map("_id") @quizdom.ObjectId
-  teamId    String?
-  teamName  String?
-  pressedAt DateTime?
 }
