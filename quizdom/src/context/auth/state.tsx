@@ -101,6 +101,7 @@ export function AuthState({ children }: { children: ReactNode }) {
   // SET USER
   const getSetTeam = (_usr: Team) => {
     setTeam(_usr);
+    setIsAuthenticated(true)
   };
 
   return (
