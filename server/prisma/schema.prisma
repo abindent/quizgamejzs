@@ -19,7 +19,6 @@ model Team {
   role      String?  @default("TEAM")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  buzzerPresses BuzzerState[]
 }
 
 type Member {
@@ -35,13 +34,9 @@ type MemberParam {
 }
 
 // BUZZER STATE MODEL
-model BuzzerState {
-  id        String   @id @default(auto()) @map("_id") @quizdom.ObjectId
-  isPressed Boolean  @default(false)
-  teamId    String?  @quizdom.ObjectId
-  teamName  String?  
-  team      Team?    @relation(fields: [teamId], references: [id])
-  pressedAt DateTime @default(now())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model GlobalBuzzer {
+  id        String    @id @default("global") @map("_id") @quizdom.ObjectId
+  teamId    String?
+  teamName  String?
+  pressedAt DateTime?
 }

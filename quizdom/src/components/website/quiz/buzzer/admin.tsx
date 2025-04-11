@@ -7,14 +7,22 @@ import Buzzer from "./buzzer";
 import styles from "./css/admin.module.css";
 
 export default function AdminPanel({ teamID }: { teamID: string }) {
+  // INTERFACE
+
+  interface BuzzerPress {
+    teamId: string;
+    teamName: string;
+    pressedAt: string;
+  }
+
+  // VARIABLES AND CONSTANTS
   const { socket } = useSocket();
-  const [round, setRound] = useState(1);
-  const [questionNumber, setQuestionNumber] = useState(1);
   const [timer, setTimer] = useState(30);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(
     null
   );
+  const [firstPressInfo, setFirstPressInfo] = useState<BuzzerPress | null>(null);
 
   const startTimer = useCallback(() => {
     if (timerInterval) return;
@@ -30,8 +38,7 @@ export default function AdminPanel({ teamID }: { teamID: string }) {
       });
     }, 1000);
     setTimerInterval(interval);
-    socket?.emit("timerStarted", { round, questionNumber, duration: timer });
-  }, [timer, round, questionNumber, socket, timerInterval]);
+  }, [timer, socket, timerInterval]);
 
   const pauseTimer = useCallback(() => {
     if (timerInterval) {
@@ -39,8 +46,7 @@ export default function AdminPanel({ teamID }: { teamID: string }) {
       setTimerInterval(null);
     }
     setIsTimerRunning(false);
-    socket?.emit("timerPaused", { round, questionNumber, timeLeft: timer });
-  }, [timerInterval, timer, round, questionNumber, socket]);
+  }, [timerInterval, timer, socket]);
 
   const resetTimer = useCallback(() => {
     if (timerInterval) {
@@ -49,11 +55,23 @@ export default function AdminPanel({ teamID }: { teamID: string }) {
     }
     setTimer(30);
     setIsTimerRunning(false);
-    socket?.emit("timerReset", { round, questionNumber });
-  }, [timerInterval, round, questionNumber, socket]);
+    setFirstPressInfo(null);
+    socket?.emit("resetBuzzer", {});
+  }, [timerInterval, socket]);
 
   useEffect(() => {
     if (!socket) return;
+    const handleBuzzerPressed = (data: BuzzerPress) => {
+      if (!firstPressInfo) {
+        setFirstPressInfo(data);
+      }
+      toast.info(`Team - ${data.teamName} pressed the button.`, { autoClose: false })
+    };
+
+    const handleBuzzerReset = () => {
+      setFirstPressInfo(null);
+    };
+
     // Emit identifyMainComputer to let the server know this is the admin client
     socket.emit("identifyMainComputer");
 
@@ -62,10 +80,22 @@ export default function AdminPanel({ teamID }: { teamID: string }) {
       toast.success("Main computer (admin) identified successfully!");
     });
 
+    socket.on("buzzerPressed", (data: BuzzerPress) => {
+      handleBuzzerPressed(data);
+    });
+
+    socket.on("buzzerReset", handleBuzzerReset);
+    socket.on("mainComputerAlreadyExists", () => {
+      toast.warn("Already logged in as an admin")
+    })
+
     return () => {
+      socket.off("buzzerPressed");
       socket.off("mainComLoginComp");
+      socket.off("buzzerReset");
+      socket.off("mainComputerAlreadyExists")
     };
-  }, [socket]);
+  }, [socket, firstPressInfo]);
 
   return (
     <div className={styles.adminContainer}>
@@ -84,7 +114,24 @@ export default function AdminPanel({ teamID }: { teamID: string }) {
           </div>
         </div>
       </div>
+
       <div className={styles.buzzerSection}>
+        <div
+          className={`${styles.buzzerContainer}`}
+        >
+          <div
+            className={`${styles.buzzerControls} ${styles.buzzerStatus}`}
+          >
+            {firstPressInfo ? (
+              <div className={styles.pressedInfo}>
+                <p>Buzzer pressed by: {firstPressInfo.teamName}</p>
+                <p>at: {firstPressInfo.pressedAt}</p>
+              </div>
+            ) : (
+              <p>Buzzer Ready</p>
+            )}
+          </div>
+        </div>
         <Buzzer teamId={teamID} teamName="Quiz Master" isAdmin={true} />
       </div>
     </div>

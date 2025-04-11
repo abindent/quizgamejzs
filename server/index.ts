@@ -66,28 +66,22 @@ io.engine.on("connection_error", (err) => {
   console.error("Socket connection error:", err);
 });
 
+
 io.on("connection", (socket) => {
   console.log(`✅ New client connected. Socket ID: ${socket.id}`);
-  console.log("Client headers:", socket.handshake.headers);
 
   // Listen for main computer identification
-  socket.on("identifyMainComputer", () => {
+  socket.on("identifyMainComputer", async () => {
     // If a main computer is already connected, notify the client
     if (mainComputerId && mainComputerId !== socket.id) {
-      console.log(
-        "Admin already connected. Rejecting new main computer:",
-        socket.id
-      );
-      socket.emit(
-        "mainComputerAlreadyExists",
-        "A main computer is already connected."
-      );
+      socket.emit("mainComputerAlreadyExists", "A main computer is already connected.");
       return;
     }
     mainComputerId = socket.id;
-    console.log("💻 Main computer identified:", socket.id);
-    // Notify all connected clients that the admin is now logged in
-    io.emit("mainComLoginComp", "Login");
+    console.log("Main computer identified:", socket.id);
+
+
+    socket.to(mainComputerId).emit("mainComLoginComp", "Login");
   });
 
   // Optionally, add logic to clear the mainComputerId when the admin disconnects
@@ -103,56 +97,29 @@ io.on("connection", (socket) => {
   socket.on(
     "pressBuzzer",
     async (data: { teamId: string; teamName: string }) => {
-      console.log("Buzzer pressed:", data);
       // Validate, record buzzer press, and notify all clients...
-      try {
-        const team = await prisma.team.findUnique({
-          where: { id: data.teamId },
-        });
-        if (!team) {
-          console.log("Invalid team ID:", data.teamId);
-          socket.emit("error", "Invalid team ID");
-          return;
-        }
+      console.log("Buzzer pressed:", data);
+      try {// Only push the event to the admin client.
 
-        // Optional: store buzzer press in database
-        const buzzerPress = await prisma.buzzerState.create({
-          data: {
-            isPressed: true,
-            teamId: data.teamId,
-            teamName: team.team
-          },
-          include: {
-            team: true,
-          },
-        });
-
-
-        // Emit the buzzer press event to all connected clients.
-        // Use the team's name from the database if available, or use a default value.
-        const payload = {
-          teamId: buzzerPress.team?.id,
-          teamName: buzzerPress.team?.team,
+        socket.to(mainComputerId).emit("buzzerPressed", {
+          teamId: data.teamId,
+          teamName: data.teamName,
           pressedAt: new Date().toISOString(),
-        };
-
-        // Only push to the admin computer if it's connected
-        if (mainComputerId) {
-          io.to(mainComputerId).emit("buzzerPressed", payload);
-          console.log("Pushed buzzer press info to admin:", payload);
-        } else {
-          console.log("No admin computer connected. Skipping push.");
-        }
+        });
       } catch (error) {
-        console.error("Buzzer press error:", error);
+        console.error("Error handling buzzer press:", error);
         socket.emit("error", "Failed to process buzzer press");
       }
     }
   );
-  socket.on("resetBuzzer", () => {
+  socket.on("resetBuzzer", async () => {
     console.log("Reset buzzer event received");
-    // Optional: update database buzzer state if necessary
-    io.emit("buzzerReset");
+    try {
+      // Broadcast reset to all connected clients.y
+      io.emit("buzzerReset");
+    } catch (error) {
+      console.error("Error resetting buzzer:", error);
+    }
   });
 });
 

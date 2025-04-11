@@ -42,32 +42,14 @@ export default function Buzzer({
 }: BuzzerProps) {
   const { socket } = useSocket();
   const [buzzerPressed, setBuzzerPressed] = React.useState(false);
-  const [pressedBy, setPressedBy] = React.useState<{
-    teamName: string;
-    pressedAt: Date;
-  } | null>(null);
   const [error, setError] = React.useState<string | null>(null);
 
   const { team }: ContextType = useAuthContext();
 
   React.useEffect(() => {
-    console.log(socket);
     if (!socket) return;
-    const handleBuzzerPressed = (data: any) => {
-      console.log("Buzzer pressed event:", data);
-      if (!pressedBy) {
-        setPressedBy({
-          teamName: data.teamName,
-          pressedAt: new Date(data.pressedAt),
-        });
-      }
-      setBuzzerPressed(true);
-      toast.info(`${data.teamName} pressed the buzzer!`, { autoClose: false });
-    };
-
     const handleBuzzerReset = () => {
       setBuzzerPressed(false);
-      setPressedBy(null);
     };
 
     const handleError = (message: string) => {
@@ -89,12 +71,10 @@ export default function Buzzer({
       toast.error("Disconnected from server!");
     });
 
-    socket.on("buzzerPressed", handleBuzzerPressed);
     socket.on("buzzerReset", handleBuzzerReset);
     socket.on("error", handleError);
 
     return () => {
-      socket.off("buzzerPressed", handleBuzzerPressed);
       socket.off("buzzerReset", handleBuzzerReset);
       socket.off("error", handleError);
     };
@@ -113,7 +93,7 @@ export default function Buzzer({
     try {
       socket.emit("pressBuzzer", {
         teamId,
-        teamName,
+        teamName
       });
       setBuzzerPressed(true);
       toast.info("Pressed buzzer");
@@ -130,7 +110,7 @@ export default function Buzzer({
     }
     try {
       socket.emit("resetBuzzer", {});
-      console.log("Reset buzzer emitted");
+
       toast.info("Resetting buzzer...");
     } catch (error) {
       console.error("Error resetting buzzer:", error);
@@ -143,27 +123,17 @@ export default function Buzzer({
       {team && (
         <>
           <div className={`${styles.buzzerContainer} ${nunito.className}`}>
-            <div
-              className={`${styles.buzzerStatus} ${
-                buzzerPressed ? styles.pressed : ""
-              }`}
+            {!isAdmin && (<div
+              className={`${styles.buzzerControls} ${styles.buzzerStatus} ${buzzerPressed ? styles.disabled : ""}`}
             >
-              {buzzerPressed && pressedBy ? (
-                <div className={styles.pressedInfo}>
-                  <p>Buzzer pressed by: {pressedBy.teamName}</p>
-                  <p>at: {pressedBy.pressedAt.toLocaleTimeString()}</p>
-                </div>
-              ) : (
-                <p>Buzzer Ready</p>
-              )}
-            </div>
 
+              <p>Buzzer {buzzerPressed ? "Pressed" : "Ready"}</p>
+            </div>)}
             <div className={styles.buzzerControls}>
               {!isAdmin && (
                 <button
-                  className={`${styles.buzzerButton} ${
-                    buzzerPressed ? styles.disabled : ""
-                  }`}
+                  className={`${styles.buzzerButton} ${buzzerPressed ? styles.disabled : ""
+                    }`}
                   onClick={handleBuzzerPress}
                   disabled={buzzerPressed}
                 >
@@ -181,9 +151,10 @@ export default function Buzzer({
             {error && <div className={styles.errorMessage}>{error}</div>}
           </div>
         </>
-      )}
+      )
+      }
       {!team && <div>Loading..</div>}
-      {process.env.NODE_ENV === "development" && <Debug />}
-    </div>
+      {/* {process.env.NODE_ENV === "development" && <Debug />} */}
+    </div >
   );
 }

@@ -10,9 +10,12 @@ import React, {
 import { io, Socket } from "socket.io-client";
 import { toast } from "react-toastify";
 
+
+
 interface SocketContextType {
   socket: Socket | null;
   isConnected: boolean;
+
 }
 
 const SocketContext = createContext<SocketContextType>({
@@ -48,8 +51,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     console.log("Connecting to server at:", serverUrl);
 
     const socketInstance = io(serverUrl, {
-      transports: ["polling"], // Use polling (upgrade to websocket later if possible)
-      reconnectionAttempts: Infinity,
+      transports: ["polling", "websocket"], // Use polling (upgrade to websocket later if possible)
+      reconnectionAttempts: 3,
       reconnectionDelay: 1000,
       timeout: 10000,
       withCredentials: true,
@@ -75,10 +78,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
     return socketInstance;
   }, []);
-
-  useEffect(() => {
-    console.log("[SocketProvider] Socket instance from useMemo:", socket);
-  }, [socket]);
 
   return (
     <SocketContext.Provider value={{ socket, isConnected }}>
