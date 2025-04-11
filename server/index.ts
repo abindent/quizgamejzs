@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { v4 as uuidv4 } from "uuid";
 import cors, { CorsOptions } from "cors";
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 import { registerTeam, verifyTeam, getTeamData } from "./lib/auth/auth";
 
 const prisma = new PrismaClient();
@@ -13,9 +13,29 @@ const port: string | number = process.env.PORT || 3001;
 
 // CORS OPTION
 const corsOption: CorsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
-  methods: ["GET", "HEAD", "POST"],
-  optionsSuccessStatus: 200
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (
+      origin.includes("localhost") ||
+      origin.includes(".app.github.dev") ||
+      origin.includes("" + process.env.FRONTEND_URI)
+    ) {
+      return callback(null, true);
+    }
+    callback(new Error("Not allowed by CORS"));
+  },
+  methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  credentials: true,
+  optionsSuccessStatus: 200,
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+    "Origin",
+    "Access-Control-Allow-Credentials",
+    "Access-Control-Allow-Origin",
+  ],
 };
 
 // APP
@@ -29,7 +49,13 @@ app.set("view engine", "ejs");
 let mainComputerId: string;
 
 const io: Server = new Server(server, {
-  cors: corsOption
+  cors: corsOption,
+  transports: ["polling", "websocket"],
+  pingTimeout: 60000,
+  pingInterval: 25000,
+  path: "/socket.io/",
+  allowEIO3: true, // Allow Engine.IO v3 clients
+  connectTimeout: 45000,
 });
 
 io.engine.generateId = (req) => {
@@ -40,135 +66,93 @@ io.engine.on("connection_error", (err) => {
   console.error("Socket connection error:", err);
 });
 
-// Interface for buzzer events
-interface BuzzerEvent {
-  teamId: string;
-  round: number;
-  questionNumber: number;
-}
-
-io.on("connection", async (socket) => {
-  socket.on("connect", () => {
-    console.log(
-      `✅ Connected to Quizdom.🎧 Listening to port ${port}. 👤 A User has joined. Socket ID: ${socket.id}.`
-    );
-  });
+io.on("connection", (socket) => {
+  console.log(`✅ New client connected. Socket ID: ${socket.id}`);
+  console.log("Client headers:", socket.handshake.headers);
 
   // Listen for main computer identification
   socket.on("identifyMainComputer", () => {
+    // If a main computer is already connected, notify the client
+    if (mainComputerId && mainComputerId !== socket.id) {
+      console.log(
+        "Admin already connected. Rejecting new main computer:",
+        socket.id
+      );
+      socket.emit(
+        "mainComputerAlreadyExists",
+        "A main computer is already connected."
+      );
+      return;
+    }
     mainComputerId = socket.id;
     console.log("💻 Main computer identified:", socket.id);
-    io.emit('mainComLoginComp', 'Login');
+    // Notify all connected clients that the admin is now logged in
+    io.emit("mainComLoginComp", "Login");
   });
 
-  // LISTEN TO BUZZER EVENT
-  socket.on("pressBuzzer", async (data: BuzzerEvent) => {
-    try {
-      // Validate team existence
-      const team = await prisma.team.findUnique({
-        where: { id: data.teamId }
-      });
-
-      if (!team) {
-        return socket.emit("error", "Invalid team ID");
-      }
-
-      // Check if buzzer is already pressed for current round and question
-      const existingBuzzer = await prisma.buzzerState.findFirst({
-        where: {
-          round: data.round,
-          questionNumber: data.questionNumber,
-          isPressed: true
-        }
-      });
-
-      if (existingBuzzer) {
-        return socket.emit("error", "Buzzer already pressed for this question");
-      }
-
-      // Create new buzzer press
-      const buzzerPress = await prisma.buzzerState.create({
-        data: {
-          isPressed: true,
-          teamId: data.teamId,
-          round: data.round,
-          questionNumber: data.questionNumber
-        },
-        include: {
-          team: true
-        }
-      });
-
-      // Emit buzzer pressed event to all clients
-      io.emit("buzzerPressed", {
-        id: socket.id,
-        teamName: team.team,
-        teamId: team.id,
-        round: buzzerPress.round,
-        questionNumber: buzzerPress.questionNumber,
-        pressedAt: buzzerPress.pressedAt
-      });
-
-    } catch (error) {
-      console.error("Buzzer press error:", error);
-      socket.emit("error", "Failed to process buzzer press");
-    }
-  });
-
-  // Reset buzzer for next question
-  socket.on("resetBuzzer", async (data: { round: number; questionNumber: number }) => {
-    try {
-      // Update buzzer state
-      await prisma.buzzerState.updateMany({
-        where: {
-          round: data.round,
-          questionNumber: data.questionNumber
-        },
-        data: {
-          isPressed: false
-        }
-      });
-
-      // Emit reset event
-      io.emit("buzzerReset", {
-        round: data.round,
-        questionNumber: data.questionNumber,
-        resetAt: new Date()
-      });
-
-    } catch (error) {
-      console.error("Buzzer reset error:", error);
-      socket.emit("error", "Failed to reset buzzer");
-    }
-  });
-
-  // Get buzzer history for a round
-  socket.on("getBuzzerHistory", async (data: { round: number }) => {
-    try {
-      const history = await prisma.buzzerState.findMany({
-        where: {
-          round: data.round
-        },
-        include: {
-          team: true
-        },
-        orderBy: {
-          questionNumber: 'asc'
-        }
-      });
-
-      socket.emit("buzzerHistory", history);
-    } catch (error) {
-      console.error("Buzzer history error:", error);
-      socket.emit("error", "Failed to fetch buzzer history");
-    }
-  });
-
+  // Optionally, add logic to clear the mainComputerId when the admin disconnects
   socket.on("disconnect", () => {
     if (socket.id === mainComputerId) {
+      console.log("💻 Main computer disconnected:", socket.id);
       mainComputerId = "";
     }
-    console.log(`👤 Socket ID: ${socket.id} got disconnected.`);
+    console.log(`Socket ${socket.id} disconnected.`);
+  });
+
+  // Example: Other event handlers (e.g., buzzer events) follow here...
+  socket.on(
+    "pressBuzzer",
+    async (data: { teamId: string; teamName: string }) => {
+      console.log("Buzzer pressed:", data);
+      // Validate, record buzzer press, and notify all clients...
+      try {
+        const team = await prisma.team.findUnique({
+          where: { id: data.teamId },
+        });
+        if (!team) {
+          console.log("Invalid team ID:", data.teamId);
+          socket.emit("error", "Invalid team ID");
+          return;
+        }
+
+        // Optional: store buzzer press in database
+        const buzzerPress = await prisma.buzzerState.create({
+          data: {
+            isPressed: true,
+            teamId: data.teamId,
+            teamName: team.team
+          },
+          include: {
+            team: true,
+          },
+        });
+
+
+        // Emit the buzzer press event to all connected clients.
+        // Use the team's name from the database if available, or use a default value.
+        const payload = {
+          teamId: buzzerPress.team?.id,
+          teamName: buzzerPress.team?.team,
+          pressedAt: new Date().toISOString(),
+        };
+
+        // Only push to the admin computer if it's connected
+        if (mainComputerId) {
+          io.to(mainComputerId).emit("buzzerPressed", payload);
+          console.log("Pushed buzzer press info to admin:", payload);
+        } else {
+          console.log("No admin computer connected. Skipping push.");
+        }
+      } catch (error) {
+        console.error("Buzzer press error:", error);
+        socket.emit("error", "Failed to process buzzer press");
+      }
+    }
+  );
+  socket.on("resetBuzzer", () => {
+    console.log("Reset buzzer event received");
+    // Optional: update database buzzer state if necessary
+    io.emit("buzzerReset");
   });
 });
 
@@ -177,42 +161,133 @@ app.get("/", (req: Request, res: Response) => {
   res.send("<h1>Accessed Quizdom Server</h1>");
 });
 
-app.post("/api/buzzer/status", async (req: Request, res: Response) => {
-  try {
-    const { round, questionNumber } = req.body;
-    
-    const buzzerState = await prisma.buzzerState.findFirst({
-      where: {
-        round,
-        questionNumber,
-        isPressed: true
-      },
-      include: {
-        team: true
-      }
-    });
-
-    res.json({ buzzerState });
-  } catch (error) {
-    console.error("Error fetching buzzer status:", error);
-    res.status(500).json({ error: "Failed to fetch buzzer status" });
-  }
+app.get("/health", (req: Request, res: Response) => {
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+  });
 });
 
-// Keep your existing auth routes as they are
-// ... (registerTeam, verifyTeam, getTeamData routes remain unchanged)
+app.post("/api/auth/create", async (req: Request, res: Response) => {
+  let body = "";
 
+  // Collect data chunks
+  req.on("data", (chunk) => {
+    body += chunk;
+  });
+
+  // When all data is received
+  req.on("end", async () => {
+    try {
+      const parsedBody = JSON.parse(body); // Parse the collected body as JSON
+      const { team, category, password, school, members, role } = parsedBody;
+      const _team = await registerTeam(
+        team,
+        category,
+        password,
+        school,
+        members,
+        role
+      );
+      if (_team?.id) {
+        res.json(_team);
+        console.log(_team.id);
+      } else {
+        res.send("Invalid Dataset");
+      }
+    } catch (e) {
+      console.error("Error:", e);
+      res.status(400).send("Some Error Occured.");
+    }
+  });
+
+  // Handle errors
+  req.on("error", (err) => {
+    console.error("Error:", err);
+    res.status(500).send("Server Error");
+  });
+});
+
+app.post("/api/auth/login", async (req: Request, res: Response) => {
+  let body = "";
+
+  // Collect data chunks
+  req.on("data", (chunk) => {
+    body += chunk;
+  });
+
+  // When all data is received
+  req.on("end", async () => {
+    try {
+      const parsedBody = JSON.parse(body); // Parse the collected body as JSON
+      const { id, password } = parsedBody;
+
+      const _team = await verifyTeam(id, password);
+      if (_team?.id) {
+        res.json(_team);
+      } else {
+        res.send("Invalid Dataset");
+      }
+    } catch (e) {
+      console.error("Error:", e);
+      res.status(400).send("Some Error Occured.");
+    }
+  });
+
+  // Handle errors
+  req.on("error", (err) => {
+    console.error("Error:", err);
+    res.status(500).send("Server Error");
+  });
+});
+
+app.post("/api/auth/team", async (req: Request, res: Response) => {
+  let body = "";
+
+  // Collect data chunks
+  req.on("data", (chunk) => {
+    body += chunk;
+  });
+
+  // When all data is received
+  req.on("end", async () => {
+    try {
+      const parsedBody = JSON.parse(body); // Parse the collected body as JSON
+      const { id } = parsedBody;
+
+      const _teamData = await getTeamData(id);
+      if (_teamData?.id) {
+        res.json(_teamData);
+      } else {
+        res.send("Invalid Dataset");
+      }
+    } catch (e) {
+      console.error("Error:", e);
+      res.status(400).send("Some Error Occured.");
+    }
+  });
+
+  // Handle errors
+  req.on("error", (err) => {
+    console.error("Error:", err);
+    res.status(500).send("Server Error");
+  });
+});
 // Error handling middleware
+// Error handling
 app.use((err: Error, req: Request, res: Response, next: Function) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
+  console.error("Server error:", err);
+  res.status(500).json({
+    error: "Internal Server Error",
+    message: err.message,
+  });
 });
 
 // Graceful shutdown
-process.on('SIGTERM', async () => {
+process.on("SIGTERM", async () => {
   await prisma.$disconnect();
   server.close(() => {
-    console.log('Server closed');
+    console.log("Server closed");
     process.exit(0);
   });
 });

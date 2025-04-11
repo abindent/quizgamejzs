@@ -24,6 +24,7 @@ interface Team {
 
 interface ContextType {
     team: Team,
+    isAuthenticated: boolean,
     setTeam: React.Dispatch<React.SetStateAction<Team>>,
     register: (data: any | null) => Promise<any>,
     login: (_id: string | null, password: string | null) => Promise<any>,

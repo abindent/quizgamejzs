@@ -1,0 +1,33 @@
+.adminContainer {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.controlPanel {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.roundControl, .questionControl, .timerControl {
+  background-color: #f5f5f5;
+  padding: 1rem;
+  border-radius: 8px;
+  flex: 1;
+  text-align: center;
+}
+
+.timerButtons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.buzzerSection {
+  background-color: #e0e0e0;
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+}

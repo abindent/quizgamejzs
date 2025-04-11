@@ -3,10 +3,9 @@ import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-
 // CONTEXT
 import { useAuthContext } from "@/context/auth/state";
-import { Team, ContextType } from "@/context/context";
+import { Team, ContextType } from "@/context/auth/context";
 
 // FLOWBITE
 import {
@@ -21,7 +20,7 @@ import {
 export default function AppBar() {
   const path = usePathname();
 
-  const { team, getSetTeam }: ContextType = useAuthContext();
+  const { team, isAuthenticated, getSetTeam }: ContextType = useAuthContext();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -67,9 +66,14 @@ export default function AppBar() {
         <NavbarLink href="/quiz" active={Boolean(path.match("/quiz"))}>
           QNA
         </NavbarLink>
-        <NavbarLink href="/register" active={Boolean(path.match("/register"))}>
-         Register
-        </NavbarLink>
+        {!isAuthenticated && (
+          <NavbarLink
+            href="/register"
+            active={Boolean(path.match("/register"))}
+          >
+            Register
+          </NavbarLink>
+        )}
       </NavbarCollapse>
       <DarkThemeToggle className="dark:text-gray-600" />
     </Navbar>
