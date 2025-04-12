@@ -31,21 +31,9 @@ export default function ConnectionDebug() {
   }, [socket]);
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: '1rem',
-      left: '1rem',
-      background: '#000c',
-      color: '#fff',
-      padding: '1rem',
-      borderRadius: '4px',
-      fontSize: '0.8rem',
-      zIndex: 1000,
-      maxWidth: '400px',
-      backdropFilter: 'blur(5px)',
-    }}>
-      <h3>Connection Debug</h3>
-      <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
+    <div className="fixed bottom-4 left-4 bg-black/80 text-white p-4 rounded-lg text-sm z-[1000] max-w-[400px] backdrop-blur-sm">
+      <h3 className="text-lg font-semibold mb-2">Connection Debug</h3>
+      <pre className="whitespace-pre-wrap break-all">
         {JSON.stringify(debugInfo, null, 2)}
       </pre>
     </div>

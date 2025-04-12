@@ -1,10 +1,19 @@
 "use client";
 
+// REACY
 import React, { useState, useEffect, useCallback } from "react";
+
+// SOCKET
 import { useSocket } from "@/context/socket/context";
+
+// TOAST
 import { toast } from "react-toastify";
+
+// BUTTON
+import { Button } from "flowbite-react";
+
+// BUZZER
 import Buzzer from "./buzzer";
-import styles from "./css/admin.module.css";
 
 export default function AdminPanel() {
   // INTERFACE
@@ -58,6 +67,7 @@ export default function AdminPanel() {
     setIsTimerRunning(false);
   }, [timerInterval, socket]);
 
+
   useEffect(() => {
     if (!socket) return;
     const handleBuzzerPressed = (data: BuzzerPress) => {
@@ -97,37 +107,49 @@ export default function AdminPanel() {
   }, [socket, firstPressInfo]);
 
   return (
-    <div className={styles.adminContainer}>
-      <div className={styles.controlPanel}>
-        <div className={styles.timerControl}>
-          <h2>Timer Control</h2>
-          <span>{timer}s</span>
-          <div className={styles.timerButtons}>
-            <button onClick={startTimer} disabled={isTimerRunning}>
+    <div className="p-8 max-w-[1200px] mx-auto">
+      <div className="flex gap-8 mb-8">
+        <div className="bg-gray-100 p-4 rounded-lg flex-1 text-center">
+          <h2 className="text-xl font-semibold mb-2">Timer Control</h2>
+          <span className="block text-2xl font-medium mb-4">{timer}s</span>
+          <div className="flex gap-2 justify-center mt-4">
+            <Button
+              onClick={startTimer}
+              disabled={isTimerRunning}
+              className="cursor-pointer px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
               Start
-            </button>
-            <button onClick={pauseTimer} disabled={!isTimerRunning}>
+            </Button>
+            <Button
+              onClick={pauseTimer}
+              disabled={!isTimerRunning}
+              className="cursor-pointer px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
               Pause
-            </button>
-            <button onClick={resetTimer}>Reset</button>
+            </Button>
+            <Button
+              onClick={resetTimer}
+              className="cursor-pointer px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+            >
+              Reset
+            </Button>
           </div>
         </div>
       </div>
 
-      <div className={styles.buzzerSection}>
-        <div
-          className={`${styles.buzzerContainer}`}
-        >
+      <div className="bg-gray-200 p-6 rounded-lg text-center">
+        <div className="flex flex-col items-center gap-8 p-8">
           <div
-            className={`${styles.buzzerControls} ${styles.buzzerStatus}`}
+            className={`w-[200px] h-[200px] rounded-full flex items-center justify-center text-white text-center transition-all duration-300 ${firstPressInfo ? "bg-red-500" : "bg-green-500"
+              }`}
           >
             {firstPressInfo ? (
-              <div className={styles.pressedInfo}>
+              <div className="flex flex-col items-center gap-2">
                 <p>Buzzer pressed by: {firstPressInfo.teamName}</p>
                 <p>at: {firstPressInfo.pressedAt}</p>
               </div>
             ) : (
-              <p>Buzzer Ready</p>
+              <p className="text-xl">Buzzer Ready</p>
             )}
           </div>
         </div>

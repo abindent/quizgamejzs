@@ -6,7 +6,7 @@ import * as React from "react";
 import { redirect } from "next/navigation";
 
 // FLOWBITE
-import { Button, Clipboard, Label, TextInput, Select } from "flowbite-react";
+import { Button, ClipboardWithIcon, Label, TextInput, Select } from "flowbite-react";
 
 // CONTEXT
 import { useAuthContext } from "@/context/auth/state";
@@ -16,6 +16,7 @@ import { v4 } from "uuid";
 
 // TOAST
 import { toast } from "react-toastify";
+import { styleText } from "util";
 
 export default function Home() {
   // TYPES
@@ -125,11 +126,12 @@ export default function Home() {
     await register(data)
       .then((res) => {
         if (res.id) {
-          toast.success("Successfully created account.");
+          navigator.clipboard.writeText(res.id)
+          toast.success(`Successfully created account. ID: ${res.id}`, {autoClose: 5000});
           setLoading(false);
           setTimeout(() => {
             toast.info("Log in to your account.");
-            redirect("/");
+            redirect("/login");
           }, 3000);
         } else {
           toast.error("Failed to login.");
@@ -152,205 +154,171 @@ export default function Home() {
   });
 
   return (
-    <form className="flex w-full h-full flex-col gap-7 justify-evenly items-center p-4">
-      <h1 className="dark:text-[rgb(102,82,82)] text-3xl font-medium">
-        REGISTRATION
-      </h1>
-      <div>
-        <div className="relative">
-          <div className="mb-2 block w-[35vw]">
-            <Label htmlFor="password" value="Team Password" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <form className="w-full max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 md:p-12 transition-all duration-300 hover:shadow-2xl">
+        <h1 className="text-4xl font-bold text-center mb-8 text-blue-600 dark:text-blue-400">
+          Team Registration
+          <div className="mt-2 w-20 h-1 bg-blue-400 dark:bg-blue-600 mx-auto rounded-full" />
+        </h1>
+
+        {/* Password Field */}
+        <div className="mb-8 relative">
+          <Label
+            htmlFor="password"
+            className="block mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300"
+          >
+            Team Password
+          </Label>
+          <div className="flex gap-2">
+            <TextInput
+              id="password"
+              type="text"
+              value={data?.password as string}
+              className="w-full text-lg py-2.5 font-mono"
+              disabled
+            />
+            <ClipboardWithIcon
+              className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              valueToCopy={data?.password as string}
+            />
           </div>
-          <TextInput
-            disabled
-            id="password"
-            type="text"
-            value={data?.password as string}
-            required
-          />
-          <Clipboard.WithIcon
-            className="top-3/4"
-            valueToCopy={data?.password as string}
-          />
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Save this password for future login
+          </p>
         </div>
-      </div>
-      <div>
-        <div className="mb-2 block w-[35vw]">
-          <Label htmlFor="_M1N" value="Name of the 1st member" />
+
+        {/* Team Members Section */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {[1, 2, 3, 4].map((num) => (
+            <div key={num} className="space-y-4">
+              <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+                Member {num}
+              </h3>
+              <div>
+                <Label
+                  htmlFor={`_M${num}N`}
+                  className="block mb-2 text-gray-600 dark:text-gray-400"
+                >
+                  Full Name
+                </Label>
+                <TextInput
+                  id={`_M${num}N`}
+                  name={`member${num}.name`}
+                  type="text"
+                  placeholder={`Member ${num} name`}
+                  value={data?.members[`member${num}` as keyof typeof data.members].name as string}
+                  onChange={handleChange}
+                  className="focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                />
+              </div>
+              <div>
+                <Label
+                  htmlFor={`_M${num}C`}
+                  className="block mb-2 text-gray-600 dark:text-gray-400"
+                >
+                  Class
+                </Label>
+                <Select
+                  id={`_M${num}C`}
+                  name={`member${num}.class`}
+                  value={data?.members[`member${num}` as keyof typeof data.members].class}
+                  onChange={handleSelect}
+                  className="w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                >
+                  {["IX", "X", "XI", "XII"].map((cls) => (
+                    <option key={cls} value={cls}>
+                      Class {cls}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+            </div>
+          ))}
         </div>
-        <TextInput
-          id="_M1N"
-          name="member1.name"
-          type="text"
-          placeholder="Enter the name of 1st member "
-          value={data?.members.member1.name as string}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="_M1C" value="Select your category" />
+
+        {/* Team Details Section */}
+        <div className="space-y-6 mb-8">
+          <div>
+            <Label
+              htmlFor="category"
+              className="block mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300"
+            >
+              Competition Category
+            </Label>
+            <Select
+              id="category"
+              value={data?.category as string}
+              onChange={handleSelect}
+              className="w-full py-2.5 text-lg focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              {[
+                "Intraschool (Junior)",
+                "Intraschool (Senior)",
+                "Interschool (Senior)",
+              ].map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          <div>
+            <Label
+              htmlFor="team"
+              className="block mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300"
+            >
+              Team Name
+            </Label>
+            <TextInput
+              id="team"
+              placeholder="Enter your team name"
+              value={data?.team as string}
+              onChange={handleChange}
+              className="w-full py-2.5 text-lg focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          <div>
+            <Label
+              htmlFor="school"
+              className="block mb-2 text-lg font-semibold text-gray-700 dark:text-gray-300"
+            >
+              School Name
+            </Label>
+            <TextInput
+              id="school"
+              type="text"
+              placeholder="Your school's name"
+              value={data?.school as string}
+              onChange={handleChange}
+              className="w-full py-2.5 text-lg focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
         </div>
-        <Select
-          className="w-[35vw]"
-          id="_M1C"
-          name="member1.class"
-          value={data?.members.member1.class}
-          onChange={handleSelect}
-          required
+
+        <Button
+          className="cursor-pointer w-full py-3 text-lg font-semibold rounded-lg transition-transform hover:scale-105"
+          onClick={handleRegister}
+          disabled={verified}
         >
-          <option value={"IX"}>IX</option>
-          <option value={"X"}>X</option>
-          <option value={"XI"}>XI</option>
-          <option value={"XII"}>XII</option>
-        </Select>
-      </div>
-      <div>
-        <div className="mb-2 block w-[35vw]">
-          <Label htmlFor="_M2N" value="Name of the 2nd member" />
-        </div>
-        <TextInput
-          id="_M2N"
-          name="member2.name"
-          type="text"
-          placeholder="Enter the name of 2nd member "
-          value={data?.members.member2.name as string}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="_M2C" value="Select your category" />
-        </div>
-        <Select
-          id="_M2C"
-          className="w-[35vw]"
-          name="member2.class"
-          value={data?.members.member2.class}
-          onChange={handleSelect}
-          required
-        >
-          <option value={"IX"}>IX</option>
-          <option value={"X"}>X</option>
-          <option value={"XI"}>XI</option>
-          <option value={"XII"}>XII</option>
-        </Select>
-      </div>
-      <div>
-        <div className="mb-2 block w-[35vw]">
-          <Label htmlFor="_M3N" value="Name of the 3rd member" />
-        </div>
-        <TextInput
-          id="_M3N"
-          name="member3.name"
-          type="text"
-          placeholder="Enter the name of 3rd member "
-          value={data?.members.member3.name as string}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="_M3C" value="Select your category" />
-        </div>
-        <Select
-          className="w-[35vw]"
-          id="_M3C"
-          name="member3.class"
-          value={data?.members.member3.class}
-          onChange={handleSelect}
-          required
-        >
-          <option value={"IX"}>IX</option>
-          <option value={"X"}>X</option>
-          <option value={"XI"}>XI</option>
-          <option value={"XII"}>XII</option>
-        </Select>
-      </div>
-      <div>
-        <div className="mb-2 block w-[35vw]">
-          <Label htmlFor="_M4N" value="Name of the 4th member" />
-        </div>
-        <TextInput
-          id="_M4N"
-          name="member4.name"
-          type="text"
-          placeholder="Enter the name of 4th member "
-          value={data?.members.member4.name as string}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="_M4C" value="Select your category" />
-        </div>
-        <Select
-          className="w-[35vw]"
-          id="_M4C"
-          name="member4.class"
-          value={data?.members.member4.class}
-          onChange={handleSelect}
-          required
-        >
-          <option value={"IX"}>IX</option>
-          <option value={"X"}>X</option>
-          <option value={"XI"}>XI</option>
-          <option value={"XII"}>XII</option>
-        </Select>
-      </div>
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="category" value="Write down your category" />
-        </div>
-        <Select
-          className="w-[35vw]"
-          id="category"
-          value={data?.category as string}
-          onChange={handleSelect}
-          required
-        >
-          <option value={"Interschool (Junior)"}>Intraschool (Junior)</option>
-          <option value={"Interschool (Senior)"}>Intraschool (Senior)</option>
-          <option value={"Intraschool (Senior)"}>Interschool (Senior)</option>
-        </Select>
-      </div>
-      <div>
-        <div className="mb-2 block">
-          <Label htmlFor="team" value="Enter your team name " />
-        </div>
-        <TextInput
-          className="w-[35vw]"
-          id="team"
-          placeholder="Enter your team name"
-          value={data?.team as string}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <div>
-        <div className="w-[35vw] mb-2 block">
-          <Label htmlFor="school" value="Select your school" />
-        </div>
-        <TextInput
-          id="school"
-          type="text"
-          placeholder="Enter your school's name"
-          value={data?.school as string}
-          onChange={handleChange}
-          required
-        />
-      </div>
-      <Button
-        className="w-[35vw] mb-3"
-        onClick={handleRegister}
-        disabled={verified}
-      >
-        Register
-      </Button>
-    </form>
+          {loading ? (
+            <span className="flex items-center justify-center">
+              <svg className="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
+                {/* Loading spinner SVG */}
+              </svg>
+              Registering...
+            </span>
+          ) : (
+            "Complete Registration"
+          )}
+        </Button>
+      </form>
+    </div>
   );
 }

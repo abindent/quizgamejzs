@@ -11,15 +11,14 @@ import { useSocket } from "@/context/socket/context";
 
 // CONTEXT
 import { useAuthContext } from "@/context/auth/state";
-
-// CSS
-import styles from "./css/bzr.module.css";
-
 // TOAST
 import { toast } from "react-toastify";
 
-// LOGIN PAGE
+// AUTH CONTEXT
 import { ContextType } from "@/context/auth/context";
+
+// BUTTON
+import { Button } from "flowbite-react";
 
 import Debug from "./debug";
 
@@ -118,41 +117,51 @@ export default function Buzzer({
 
   return (
     <div>
+      {/* {process.env.NODE_ENV === "development" && <Debug />} */}
       {team && (
         <>
-          <div className={`${styles.buzzerContainer} ${nunito.className}`}>
-            {!isAdmin && (<div
-              className={`${styles.buzzerControls} ${styles.buzzerStatus} ${buzzerPressed ? styles.pressed : ""}`}
-            >
-
-              <p>Buzzer {buzzerPressed ? "Pressed" : "Ready"}</p>
-            </div>)}
-            <div className={styles.buzzerControls}>
+          <div className={`${nunito.className} flex flex-col items-center gap-8 p-8`}>
+            {!isAdmin && (
+              <div
+                className={`w-[200px] h-[200px] rounded-full flex items-center justify-center text-white text-center transition-all duration-300 ${buzzerPressed ? "bg-red-500" : "bg-green-500"
+                  }`}
+              >
+                <p className="text-xl">Buzzer {buzzerPressed ? "Pressed" : "Ready"}</p>
+              </div>
+            )}
+            <div className="flex gap-4">
               {!isAdmin && (
-                <button
-                  className={`${styles.buzzerButton} ${buzzerPressed ? styles.disabled : ""
+                <Button
+                  className={`cursor-pointer px-8 py-4 text-lg rounded-full text-white transition-all duration-300 ${buzzerPressed
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-500 hover:bg-blue-600 hover:scale-105"
                     }`}
                   onClick={handleBuzzerPress}
                   disabled={buzzerPressed}
                 >
                   Press Buzzer
-                </button>
+                </Button>
               )}
 
               {team.role == "ADMIN" && isAdmin && (
-                <button className={styles.resetButton} onClick={handleReset}>
+                <Button
+                  className="cursor-pointer px-8 py-4 text-lg rounded-full bg-orange-500 text-white hover:bg-orange-600 hover:scale-105 transition-all duration-300"
+                  onClick={handleReset}
+                >
                   Reset Buzzer
-                </button>
+                </Button>
               )}
             </div>
 
-            {error && <div className={styles.errorMessage}>{error}</div>}
+            {error && (
+              <div className="text-red-500 p-4 rounded-md bg-red-50/10 mt-4">
+                {error}
+              </div>
+            )}
           </div>
         </>
-      )
-      }
+      )}
       {!team && <div>Loading..</div>}
-      {/* {process.env.NODE_ENV === "development" && <Debug />} */}
-    </div >
+    </div>
   );
 }
