@@ -25,8 +25,6 @@ import Debug from "./debug";
 
 // INTERFCE
 interface BuzzerProps {
-  teamId: string;
-  teamName: string;
   isAdmin?: boolean;
 }
 
@@ -36,8 +34,6 @@ const nunito = Nunito({
 });
 
 export default function Buzzer({
-  teamId,
-  teamName,
   isAdmin = false,
 }: BuzzerProps) {
   const { socket } = useSocket();
@@ -45,6 +41,8 @@ export default function Buzzer({
   const [error, setError] = React.useState<string | null>(null);
 
   const { team }: ContextType = useAuthContext();
+  const teamId = team.id;
+  const teamName = team.team;
 
   React.useEffect(() => {
     if (!socket) return;
@@ -124,7 +122,7 @@ export default function Buzzer({
         <>
           <div className={`${styles.buzzerContainer} ${nunito.className}`}>
             {!isAdmin && (<div
-              className={`${styles.buzzerControls} ${styles.buzzerStatus} ${buzzerPressed ? styles.disabled : ""}`}
+              className={`${styles.buzzerControls} ${styles.buzzerStatus} ${buzzerPressed ? styles.pressed : ""}`}
             >
 
               <p>Buzzer {buzzerPressed ? "Pressed" : "Ready"}</p>

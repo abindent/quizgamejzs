@@ -32,10 +32,8 @@ export default function Panel({ category }: { category: string }) {
   }
 
   function getBuzzerURL() {
-    const _t_id = team.id;
-    const _t_name = team.team;
     let buzzerURL: string;
-    buzzerURL = `/quiz/${category}/round/point-blank/buzzer?teamId=` + _t_id + "&teamName=" + _t_name;
+    buzzerURL = `/quiz/${category}/round/point-blank/buzzer`;
     if (team.role === "ADMIN") {
       buzzerURL = `/quiz/${category}/round/point-blank/buzzer?admin=true`;
     }

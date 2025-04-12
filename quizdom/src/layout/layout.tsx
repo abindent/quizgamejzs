@@ -3,7 +3,7 @@
 import * as React from "react";
 
 // FLOWBITE
-import { Flowbite } from "flowbite-react";
+import {  ThemeProvider } from "flowbite-react";
 
 // TOAST
 import { ToastContainer, Flip } from "react-toastify";
@@ -32,19 +32,19 @@ export default function Layout({
     <Loader />
   ) : (
     <AuthState>
-      <Flowbite>
-        <ToastContainer
-          position="top-right"
-          limit={8}
-          theme="colored"
-          autoClose={4000}
-          draggable
-          transition={Flip}
-        />
-        <Navbar />
-        {children}
-        <Footer />
-      </Flowbite>
+      <ThemeProvider>
+          <ToastContainer
+            position="top-right"
+            limit={8}
+            theme="colored"
+            autoClose={4000}
+            draggable
+            transition={Flip}
+          />
+          <Navbar />
+          {children}
+          <Footer />
+      </ThemeProvider>
     </AuthState>
   );
 }

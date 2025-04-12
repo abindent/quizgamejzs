@@ -7,6 +7,9 @@ import Link from "next/link";
 import { useAuthContext } from "@/context/auth/state";
 import { Team, ContextType } from "@/context/auth/context";
 
+// TOAST
+import { toast } from "react-toastify";
+
 // FLOWBITE
 import {
   Navbar,
@@ -15,12 +18,25 @@ import {
   NavbarLink,
   NavbarToggle,
   DarkThemeToggle,
+  Button,
 } from "flowbite-react";
 
 export default function AppBar() {
   const path = usePathname();
 
   const { team, isAuthenticated, getSetTeam }: ContextType = useAuthContext();
+
+  const handleLogOut = (e: React.SyntheticEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    localStorage.removeItem("_id");
+    localStorage.removeItem("_user");
+    toast.success("Successfully logged out.")
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000)
+
+
+  }
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -41,7 +57,7 @@ export default function AppBar() {
 
   return (
     <Navbar
-      className="dark:bg-gradient-to-r dark:from-indigo-500 dark:via-purple-600 dark:to-pink-500"
+      className="dark:bg-gradient-to-r dark:from-indigo-400 dark:via-purple-400 dark:to-pink-400"
       fluid
       rounded
     >
@@ -67,12 +83,22 @@ export default function AppBar() {
           QNA
         </NavbarLink>
         {!isAuthenticated && (
-          <NavbarLink
-            href="/register"
-            active={Boolean(path.match("/register"))}
-          >
-            Register
-          </NavbarLink>
+          <>
+            <NavbarLink
+              href="/login"
+              active={Boolean(path.match("/login"))}
+            >
+              Login
+            </NavbarLink>
+            <NavbarLink
+              href="/register"
+              active={Boolean(path.match("/register"))}
+            >
+              Register
+            </NavbarLink></>
+        )}
+        {isAuthenticated && (
+          <Button onClick={handleLogOut} className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800 cursor-pointer" >Log Out</Button>
         )}
       </NavbarCollapse>
       <DarkThemeToggle className="dark:text-gray-600" />

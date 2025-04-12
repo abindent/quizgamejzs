@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import Component from "./component";
 
 // CONTEXT
-import { ContextType } from "@/context/context";
+import { ContextType } from "@/context/auth/context";
 import { useAuthContext } from "@/context/auth/state";
 
 export default function PointBlank({

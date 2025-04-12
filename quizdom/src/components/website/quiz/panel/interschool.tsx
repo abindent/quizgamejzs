@@ -29,7 +29,7 @@ export default function Panel() {
 
         <div className={styles.rounds}><Link href="/quiz/interschool/round/on-your-own">
             <div className={styles.first}>
-                <img src="/_asset/static/person.jpg" alt="person" />
+                <img src="/_asset/static/person.jpg" loading="lazy" alt="person" />
             </div>
             <div className={styles.second}>
                 <h1>On Your Own</h1>
@@ -38,7 +38,7 @@ export default function Panel() {
 
         <div className={styles.rounds}><Link href="/quiz/interschool/round/pounce-bounce">
             <div className={styles.first}>
-                <img src="/_asset/static/bounce.jpg" alt="logo" />
+                <img src="/_asset/static/bounce.jpg" loading="lazy" alt="logo" />
             </div>
             <div className={styles.second}>
                 <h1>Pounce - Bounce</h1>
@@ -47,7 +47,7 @@ export default function Panel() {
 
         <div className={styles.rounds}><Link href="/quiz/interschool/round/connections">
             <div className={styles.first}>
-                <img src="/_asset/static/connection.jpg" alt="" />
+                <img src="/_asset/static/connection.jpg" loading="lazy" alt="" />
             </div>
             <div className={styles.second}>
                 <h1>Connections</h1>
@@ -56,7 +56,7 @@ export default function Panel() {
 
         <div className={styles.rounds}><Link href="/quiz/interschool/round/movie-mania">
             <div className={styles.first}>
-                <img src="/_asset/static/movie.jpg" alt="logo" />
+                <img src="/_asset/static/movie.jpg" loading="lazy" alt="logo" />
             </div>
             <div className={styles.second}>
                 <h1>Movie Mania</h1>
@@ -65,7 +65,7 @@ export default function Panel() {
 
         <div className={styles.rounds}><Link href="/quiz/interschool/round/point-blank">
             <div className={styles.first}>
-                <img src="/_asset/static/pointblank.jpg" alt="logo" />
+                <img src="/_asset/static/pointblank.jpg" loading="lazy" alt="logo" />
             </div>
             <div className={styles.second}>
                 <h1>Point Blank</h1>
@@ -74,7 +74,7 @@ export default function Panel() {
 
         <div className={styles.rounds}><Link href="/quiz/interschool/round/on-your-fingertips">
             <div className={styles.first}>
-                <img src="/_asset/static/fingertips.png" alt="logo" />
+                <img src="/_asset/static/fingertips.png" loading="lazy" alt="logo" />
             </div>
             <div className={styles.second}>
                 <h1>On Your Fingertips</h1>

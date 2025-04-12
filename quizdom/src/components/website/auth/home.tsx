@@ -9,7 +9,7 @@ import {
 } from "flowbite-react";
 
 // CONTEXT
-import { ContextType } from "@/context/context";
+import { ContextType } from "@/context/auth/context";
 import { useAuthContext } from "@/context/auth/state";
 // TOAST
 import { toast } from "react-toastify";
@@ -82,7 +82,7 @@ export default function Home() {
       <h1 className="dark:text-[rgb(102,82,82)] text-3xl font-medium">LOGIN</h1>
       <div>
         <div className="mb-2 block w-[35vw]">
-          <Label htmlFor="_id" value="Enter Team ID" />
+          <Label htmlFor="_id">Enter Team ID</Label>
         </div>
         <TextInput
           id="_id"
@@ -95,7 +95,7 @@ export default function Home() {
       </div>
       <div>
         <div className="mb-2 block w-[35vw]">
-          <Label htmlFor="_t_password" value="Enter password" />
+          <Label htmlFor="_t_password">Enter password</Label>
         </div>
         <TextInput
           id="_t_password"

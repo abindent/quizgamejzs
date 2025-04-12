@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import Buzzer from "./buzzer";
 import styles from "./css/admin.module.css";
 
-export default function AdminPanel({ teamID }: { teamID: string }) {
+export default function AdminPanel() {
   // INTERFACE
 
   interface BuzzerPress {
@@ -17,8 +17,8 @@ export default function AdminPanel({ teamID }: { teamID: string }) {
 
   // VARIABLES AND CONSTANTS
   const { socket } = useSocket();
-  const [timer, setTimer] = useState(30);
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [timer, setTimer] = useState(15);
+  const [isTimerRunning, setIsTimerRunning] = useState<boolean>(false);
   const [timerInterval, setTimerInterval] = useState<NodeJS.Timeout | null>(
     null
   );
@@ -32,6 +32,7 @@ export default function AdminPanel({ teamID }: { teamID: string }) {
         if (prev <= 1) {
           clearInterval(interval);
           setIsTimerRunning(false);
+          resetTimer();
           return 0;
         }
         return prev - 1;
@@ -53,10 +54,8 @@ export default function AdminPanel({ teamID }: { teamID: string }) {
       clearInterval(timerInterval);
       setTimerInterval(null);
     }
-    setTimer(30);
+    setTimer(15);
     setIsTimerRunning(false);
-    setFirstPressInfo(null);
-    socket?.emit("resetBuzzer", {});
   }, [timerInterval, socket]);
 
   useEffect(() => {
@@ -65,7 +64,7 @@ export default function AdminPanel({ teamID }: { teamID: string }) {
       if (!firstPressInfo) {
         setFirstPressInfo(data);
       }
-      toast.info(`Team - ${data.teamName} pressed the button.`, { autoClose: false })
+      toast.info(`Team - ${data.teamName} pressed the button.`, { autoClose: 15000 })
     };
 
     const handleBuzzerReset = () => {
@@ -132,7 +131,7 @@ export default function AdminPanel({ teamID }: { teamID: string }) {
             )}
           </div>
         </div>
-        <Buzzer teamId={teamID} teamName="Quiz Master" isAdmin={true} />
+        <Buzzer isAdmin={true} />
       </div>
     </div>
   );

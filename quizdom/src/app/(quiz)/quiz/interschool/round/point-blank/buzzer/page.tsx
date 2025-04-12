@@ -8,24 +8,19 @@ import { Nunito } from "next/font/google";
 
 export default function Page() {
   const searchParams = useSearchParams();
-  const teamId = searchParams.get("teamId") || "defaultTeam";
-  const teamName = searchParams.get("teamName") || "Default Team";
   const isAdmin = searchParams.get("admin") === "true";
   return (
     <SocketProvider>
       <div>
         <div className="p-4">
           {isAdmin ? (
-            <AdminPanel teamID={teamId} />
+            <AdminPanel />
           ) : (
             <>
               <h1 className="text-2xl font-bold mb-6 text-center">
                 Team Buzzer
               </h1>
-              <Buzzer
-                teamId={teamId}
-                teamName={teamName}
-              />
+              <Buzzer />
             </>
           )}
         </div>

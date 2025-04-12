@@ -1,6 +1,7 @@
 import { Footer, FooterBrand, FooterCopyright, FooterDivider } from "flowbite-react";
 
 export default function AppFooter() {
+  const date = new Date();
   return (
     <Footer container className="initial bottom-0">
       <div className="w-full text-center">
@@ -13,7 +14,7 @@ export default function AppFooter() {
           />
         </div>
         <FooterDivider />
-        <FooterCopyright by="Quizdom" year={2024} />
+        <FooterCopyright by="Quizdom" year={date.getFullYear()} />
       </div>
     </Footer>
   );
