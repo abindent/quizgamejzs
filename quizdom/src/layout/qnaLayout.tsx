@@ -16,7 +16,7 @@ export default function QuizLayout({
     const { team } = useAuthContext();
     React.useEffect(() => {
         if (typeof window !== "undefined") {
-            if (team.role !== "ADMIN") {
+            if (team.role && team.role !== "ADMIN") {
                 toast.warn("You are not an admin.")
                 redirect("/account");
 

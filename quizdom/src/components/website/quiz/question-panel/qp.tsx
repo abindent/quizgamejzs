@@ -1,20 +1,24 @@
+// PointBlank.tsx with Fixed Type Handling
 "use client";
-// REACT
-import * as React from "react";
 
-// NEXTJS
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-// CSS
-import styles from "./css/qp.module.css";
-
-// TOAST
 import { toast } from "react-toastify";
-import Component from "./component";
+import { Button, Card, Spinner, Badge } from "flowbite-react";
+import { HiArrowLeft, HiArrowRight, HiSwitchHorizontal, HiInformationCircle } from "react-icons/hi";
 
-// CONTEXT
+import Component from "./component";
 import { ContextType } from "@/context/auth/context";
 import { useAuthContext } from "@/context/auth/state";
+
+interface PointBlankProps {
+  category: string;
+  qno: string;
+  round: string;
+  type: string;
+  path: string;
+  limit?: string;
+}
 
 export default function PointBlank({
   category,
@@ -23,14 +27,8 @@ export default function PointBlank({
   type,
   limit,
   path,
-}: {
-  category: string;
-  qno: string;
-  round: string;
-  type: string;
-  path: string;
-  limit?: string;
-}) {
+}: PointBlankProps) {
+  // Helper function to get file extension based on content type
   function getExtension(type: string) {
     if (type === "img") {
       return "png";
@@ -40,142 +38,223 @@ export default function PointBlank({
       return "mp3";
     }
   }
-  // INTERFACE
-  interface ANS {
-    type: string | undefined;
-    extension: string | undefined;
-  }
-  // USESTATE VARS
-  const [ans, setAns] = React.useState<ANS>({
-    type: type,
-    extension: getExtension(type),
-  });
-  const [showAns, setShowAns] = React.useState<boolean>(false);
-  const [load, setLoad] = React.useState<boolean>(false);
-  const [prevdisabled, setPrevDisabled] = React.useState<boolean>(false);
-  const [nextdisabled, setNextDisabled] = React.useState<boolean>(false);
 
-  // QUESTION AND ANSWER STRING
-  const QURI = `/_asset/quiz/${category}/${ans.type}/${round}-${qno}.${ans.extension}`;
-  const AURI = `/_asset/quiz/${category}/${ans.type}/${round}-ans-${qno}.${ans.extension}`;
-  // ROUTER
+  // State
+  const [showAns, setShowAns] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [extension] = useState<string>(getExtension(type));
+  
+  // Question and answer URIs
+  const questionURI = `/_asset/quiz/${category}/${type}/${round}-${qno}.${extension}`;
+  const answerURI = `/_asset/quiz/${category}/${type}/${round}-ans-${qno}.${extension}`;
+  
+  // Router
   const router = useRouter();
 
-  // SHOW NEXT
-  function getNextURL(qno: string, type: string | undefined) {
-    if (qno !== limit) {
-      return path.replace(`${qno}`, `${Number(qno) + 1}?type=${type}`);
-    } else {
-      setNextDisabled(!nextdisabled);
-      return ``;
-    }
-  }
-
-  // GET PREV
-  function getPrevURL(qno: string, type: string | undefined) {
-    if (Number(qno) !== 1) {
-      return path.replace(`${qno}`, `${Number(qno) - 1}?type=${type}`);
-    } else {
-      setPrevDisabled(!prevdisabled);
-      return ``;
-    }
-  }
-
-  // SHOW ANS
-  function ShowAns(e: React.SyntheticEvent) {
-    e.preventDefault();
-    window.alert(`Do you want to show the ${showAns ? "question" : "answer"}?`);
-    setShowAns(!showAns);
-    toast.success(
-      `Successfully updated the image with ${showAns ? "question" : "answer"}`
-    );
-  }
-
-  // CONTEXT
+  // Context for authorization
   const context = useAuthContext();
   const { team }: ContextType = context;
 
-  React.useEffect(() => {
+  // Check if navigation should be disabled
+  const isPrevDisabled = Number(qno) <= 1;
+  const isNextDisabled = limit ? Number(qno) >= Number(limit) : false;
+
+  // Navigation URL helpers
+  const getNextURL = () => {
+    if (!isNextDisabled) {
+      return path.replace(`${qno}`, `${Number(qno) + 1}?type=${type}`);
+    }
+    return '';
+  };
+
+  const getPrevURL = () => {
+    if (!isPrevDisabled) {
+      return path.replace(`${qno}`, `${Number(qno) - 1}?type=${type}`);
+    }
+    return '';
+  };
+
+  // Toggle between question and answer
+  const toggleAnswer = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    
+    // Confirm with the user
+    if (window.confirm(`Do you want to show the ${showAns ? "question" : "answer"}?`)) {
+      setShowAns(!showAns);
+      toast.success(`Successfully updated to show ${showAns ? "question" : "answer"}`);
+    }
+  };
+
+  // Navigate to previous question
+  const goToPrevious = () => {
+    if (!isPrevDisabled) {
+      router.push(getPrevURL());
+    }
+  };
+
+  // Navigate to next question
+  const goToNext = () => {
+    if (!isNextDisabled) {
+      router.push(getNextURL());
+    }
+  };
+
+  // Check authorization on component mount
+  useEffect(() => {
     if (team.role) {
       if (team.role !== "ADMIN") {
         router.push(`${path.replace(qno, '')}`);
-        toast.error("You are not authorized to access the content.");
-      }
-      else{
-        setLoad(!load);
+        toast.error("You are not authorized to access this content.");
+      } else {
+        setLoading(false);
       }
     }
-  }, [team]);
+  }, [team, router, path, qno]);
+
+  // Keyboard navigation support
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent handling if user is typing in an input field
+      if (e.target instanceof HTMLInputElement || 
+          e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      
+      switch (e.key) {
+        case 'ArrowLeft':
+          if (!isPrevDisabled) goToPrevious();
+          break;
+        case 'ArrowRight':
+          if (!isNextDisabled) goToNext();
+          break;
+        case ' ':
+          // Prevent scrolling with spacebar
+          e.preventDefault();
+          toggleAnswer(e as unknown as React.SyntheticEvent);
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isPrevDisabled, isNextDisabled, showAns]);
+
+  // Prepare visualization URIs for special content types - with fixed type handling
+  const getComponentProps = () => {
+    if (type === "visualaudio") {
+      if (!showAns) {
+        return {
+          URI: `/_asset/quiz/${category}/img/${round}-${qno}.png`,
+          vURI: `/_asset/quiz/${category}/audio/${round}-${qno}.mp3`,
+          alt: `${category} - Round ${round} - Q${qno}`,
+          type
+        };
+      } else {
+        return {
+          URI: `/_asset/quiz/${category}/img/${round}-ans-${qno}.png`,
+          vURI: null,
+          alt: `${category} - Round ${round} - Q${qno} (Answer)`,
+          type
+        };
+      }
+    } else if (type === "visualvideoans") {
+      if (!showAns) {
+        return {
+          URI: `/_asset/quiz/${category}/img/${round}-${qno}.png`,
+          vURI: `/_asset/quiz/${category}/video/${round}-${qno}.mp4`,
+          alt: `${category} - Round ${round} - Q${qno}`,
+          type
+        };
+      } else {
+        return {
+          URI: `/_asset/quiz/${category}/img/${round}-ans-${qno}.png`,
+          vURI: `/_asset/quiz/${category}/video/${round}-ans-${qno}.mp4`,
+          alt: `${category} - Round ${round} - Q${qno} (Answer)`,
+          type
+        };
+      }
+    } else {
+      return {
+        URI: showAns ? answerURI : questionURI,
+        alt: `${category} - Round ${round} - Q${qno}${showAns ? " (Answer)" : ""}`,
+        type
+      };
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner size="xl" />
+      </div>
+    );
+  }
 
   return (
-    <div>
-      {load && <div className={styles.masterContainer}>
-        {!type.startsWith("visual") && (
-          <>
-            {!showAns && <Component alt="img" URI={QURI} type={type} />}
-            {showAns && <Component alt="img" URI={AURI} type={type} />}
-          </>
-        )}
-        {type.match("visualaudio") && !showAns && (
-          <Component
-            alt="img"
-            URI={`/_asset/quiz/${category}/img/${round}-${qno}.png`}
-            type={type}
-            vURI={`/_asset/quiz/${category}/audio/${round}-${qno}.mp3`}
-          />
-        )}
-        {type.match("visualaudio") && showAns && (
-          <Component
-            alt="img"
-            URI={`/_asset/quiz/${category}/img/${round}-ans-${qno}.png`}
-            type={type}
-          />
-        )}
-
-        {type.match("visualvideoans") && !showAns && (
-          <Component
-            alt="img"
-            URI={`/_asset/quiz/${category}/img/${round}-${qno}.png`}
-            type={type}
-            vURI={`/_asset/quiz/${category}/video/${round}-${qno}.mp4`}
-          />
-        )}
-        {type.match("visualvideoans") && showAns && (
-          <Component
-            alt="img"
-            URI={`/_asset/quiz/${category}/img/${round}-ans-${qno}.png`}
-            vURI={`/_asset/quiz/${category}/video/${round}-ans-${qno}.mp4`}
-            type={type}
-          />
-        )}
-
-        <div className={styles.button}>
-          {!prevdisabled && (
-            <button
-              className={styles.btn}
-              onClick={() => {
-                router.push(getPrevURL(qno, ans.type));
-              }}
-            >
-              Show Previous
-            </button>
-          )}
-          <button className={styles.btn} onClick={ShowAns}>
-            Show {showAns ? "Question" : "Answer"}
-          </button>
-          {!nextdisabled && (
-            <button
-              className={styles.btn}
-              onClick={() => {
-                router.push(getNextURL(qno, ans.type));
-              }}
-            >
-              Show Next
-            </button>
-          )}
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-200 p-4 md:p-8">
+      <Card className="max-w-6xl mx-auto overflow-visible">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center space-x-2">
+            <Badge color={showAns ? "success" : "info"} size="sm">
+              {showAns ? "Answer" : "Question"}
+            </Badge>
+            <Badge color="purple" size="sm">
+              Round {round}
+            </Badge>
+            <Badge color="dark" size="sm">
+              {category}
+            </Badge>
+          </div>
+          <div className="text-sm text-gray-500">
+            Question {qno} {limit ? `of ${limit}` : ''}
+          </div>
         </div>
-      </div>
-      }
+        
+        <div className="relative w-full h-full flex-1 flex items-center justify-center">
+          <Component {...getComponentProps()} />
+        </div>
+        
+        <div className="flex flex-wrap justify-center items-center gap-4 mt-8 w-full">
+          <Button
+            color="light"
+            onClick={goToPrevious}
+            disabled={isPrevDisabled}
+            className={isPrevDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-200 cursor-pointer'}
+          >
+            <HiArrowLeft className="mr-2" />
+            Previous
+          </Button>
+          
+          <Button
+            onClick={toggleAnswer}
+            className="px-6 py-2 cursor-pointer"
+          >
+            <HiSwitchHorizontal className="mr-2" />
+            Show {showAns ? "Question" : "Answer"}
+          </Button>
+          
+          <Button
+            color="light"
+            onClick={goToNext}
+            disabled={isNextDisabled}
+            className={isNextDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-200 cursor-pointer'}
+          >
+            Next
+            <HiArrowRight className="ml-2" />
+          </Button>
+        </div>
+        
+        <div className="mt-6 text-center">
+          <div className="text-xs text-gray-500 flex items-center justify-center">
+            <HiInformationCircle className="mr-1" />
+            Use keyboard shortcuts: Left/Right arrows to navigate, Space to toggle question/answer
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }
