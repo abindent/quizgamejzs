@@ -14,7 +14,7 @@ export default function QuizLayout({
     if (typeof window !== "undefined") {
       if (!localStorage.getItem("_user")) {
         toast.info("Please login to your team.");
-        redirect("/");
+        redirect("/login");
       }
     }
   });

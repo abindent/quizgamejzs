@@ -4,9 +4,8 @@ import Buzzer from "@/components/website/quiz/buzzer/buzzer";
 import AdminPanel from "@/components/website/quiz/buzzer/admin";
 // SOCKET
 import { SocketProvider } from "@/context/socket/context";
-import { Nunito } from "next/font/google";
 
-export default function Page() {
+export default function BuzzerPage() {
   const searchParams = useSearchParams();
   const isAdmin = searchParams.get("admin") === "true";
   return (

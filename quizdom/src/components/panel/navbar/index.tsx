@@ -78,10 +78,20 @@ export default function AppBar() {
     if (route === "/") {
       return path === "/";
     }
-    
+
     // For other routes, check if path exactly matches or starts with route/
     return path === route || path?.startsWith(`${route}/`);
   };
+
+  // Get Buzzer URL
+  function getBuzzerURL() {
+    let buzzerURL: string;
+    buzzerURL = "/quiz/buzzer";
+    if (team.role === "ADMIN") {
+      buzzerURL = `/quiz/buzzer?admin=true`;
+    }
+    return buzzerURL;
+  }
 
   return (
     <Navbar
@@ -129,10 +139,11 @@ export default function AppBar() {
                 {team?.team || "User"}
               </span>
               <span className="block truncate text-sm font-medium">
-               <b><u>ROLE:</u></b> {team?.role || "Member"}
+                <b><u>ROLE:</u></b> {team?.role || "Member"}
               </span>
             </DropdownHeader>
             <DropdownItem as={Link} href="/account">Profile</DropdownItem>
+            <DropdownItem as={Link} href={getBuzzerURL()}>Buzzer</DropdownItem>
             <DropdownDivider />
             <DropdownItem onClick={handleLogOut} disabled={isLoggingOut}>
               {isLoggingOut ? "Logging out..." : "Sign out"}

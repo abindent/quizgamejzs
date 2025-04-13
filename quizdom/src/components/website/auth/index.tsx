@@ -164,7 +164,7 @@ export default function Home() {
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 cursor-pointer"
+                className="cursor-pointer absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 dark:text-gray-400 cursor-pointer"
                 onClick={togglePasswordVisibility}
               >
                 {showPassword ? (
@@ -184,7 +184,7 @@ export default function Home() {
           <Button
             onClick={handleLogin}
             disabled={isButtonDisabled}
-            className="mt-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-white"
+            className="cursor-pointer mt-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:bg-gradient-to-br focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-white"
           >
             {loading ? (
               <div className="flex items-center justify-center">

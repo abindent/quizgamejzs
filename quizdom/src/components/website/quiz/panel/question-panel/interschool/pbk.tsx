@@ -31,15 +31,6 @@ export default function Panel({ category }: { category: string }) {
     return `/quiz/${category}/round/point-blank/${q_no}?type=${type}`;
   }
 
-  function getBuzzerURL() {
-    let buzzerURL: string;
-    buzzerURL = `/quiz/${category}/round/point-blank/buzzer`;
-    if (team.role === "ADMIN") {
-      buzzerURL = `/quiz/${category}/round/point-blank/buzzer?admin=true`;
-    }
-    return buzzerURL;
-  }
-
   return (
     <div className={nunito.className}>
       <section className={styles.oyo_qns}>
@@ -140,12 +131,6 @@ export default function Panel({ category }: { category: string }) {
           <h3 className={styles.ti}>Question - XVI </h3>
           <Link href={genURL("16", "img")}>
             <button className={styles.qns_ans}>View</button>
-          </Link>
-        </div>
-        <div className={styles.qns}>
-          <h3 className={styles.ti}>BUZZER </h3>
-          <Link href={getBuzzerURL()}>
-            <button className={styles.qns_ans}>GET</button>
           </Link>
         </div>
       </section>

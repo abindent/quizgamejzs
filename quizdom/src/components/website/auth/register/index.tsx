@@ -148,7 +148,7 @@ export default function Home() {
     if (typeof window !== "undefined") {
       if (localStorage.getItem("_user")) {
         toast.info("You are authenticated.");
-        redirect("/");
+        redirect("/account");
       }
     }
   });

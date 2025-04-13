@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import Register from "@/components/website/register";
+import Register from "@/components/website/auth/register";
 
 // METADATA
 export const metadata: Metadata = {

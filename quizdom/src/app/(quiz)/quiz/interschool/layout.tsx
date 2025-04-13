@@ -1,9 +1,9 @@
-import Layout from "@/layout/quizLayout";
+import Layout from "@/layout/qnaLayout";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Account Page - Quizdom",
-  description: "Manage your account settings and preferences.",
+  title: "Interschool Quiz",
+  description: "Participate in the interschool quiz competition.",
 };
 
 export default function Page({
