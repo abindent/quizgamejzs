@@ -1,44 +1,57 @@
-// Component.tsx with Fixed TypeScript Interface
+// Component.tsx with Enhanced Video Player Integration
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 import EnhancedAudioPlayer from "./audio";
+import EnhancedVideoPlayer from "./video";
 
 interface ComponentProps {
   alt?: string;
-  URI?: string;  // Made optional by adding the ? here
+  URI?: string;
   type?: string;
   vURI?: string | null;
 }
 
 export default function Component({ alt, URI, vURI, type }: ComponentProps) {
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState<boolean>(false);
   
-  // Handle audio play state changes from the EnhancedAudioPlayer
+  // Handle media play state changes
   const handleAudioPlayStateChange = (isPlaying: boolean) => {
     setIsAudioPlaying(isPlaying);
+    
+    // Pause video if it's playing when audio starts
+    if (isPlaying && isVideoPlaying) {
+      setIsVideoPlaying(false);
+    }
+  };
+  
+  const handleVideoPlayStateChange = (isPlaying: boolean) => {
+    setIsVideoPlaying(isPlaying);
+    
+    // Pause audio if it's playing when video starts
+    if (isPlaying && isAudioPlaying) {
+      setIsAudioPlaying(false);
+    }
   };
 
   const renderContent = () => {
     switch (type) {
       case "img":
-        return URI ? (
+        return (
           <img 
             alt={alt} 
             src={URI} 
             className="w-full h-auto max-h-screen object-contain rounded-lg shadow-lg" 
           />
-        ) : (
-          <div className="text-red-500">Image source is missing</div>
         );
       case "video":
-        return URI ? (
-          <video 
-            controls 
-            src={URI} 
-            className="w-full h-auto max-h-screen object-contain rounded-lg shadow-lg" 
-          />
-        ) : (
-          <div className="text-red-500">Video source is missing</div>
+        return (
+          <div className="w-full max-w-4xl mx-auto">
+            <EnhancedVideoPlayer 
+              src={URI} 
+              title={alt || "Video"} 
+              onPlayStateChange={handleVideoPlayStateChange}
+            />
+          </div>
         );
       case "audio":
         return (
@@ -55,13 +68,11 @@ export default function Component({ alt, URI, vURI, type }: ComponentProps) {
       case "visualaudio":
         return (
           <div className="flex flex-col items-center justify-center w-full gap-8">
-            {URI && (
-              <img 
-                alt={alt} 
-                src={URI} 
-                className="w-full h-auto max-h-screen object-contain rounded-lg shadow-lg" 
-              />
-            )}
+            <img 
+              alt={alt} 
+              src={URI} 
+              className="w-full h-auto max-h-screen object-contain rounded-lg shadow-lg" 
+            />
             {vURI && (
               <div className="w-full max-w-xl">
                 <EnhancedAudioPlayer 
@@ -78,19 +89,17 @@ export default function Component({ alt, URI, vURI, type }: ComponentProps) {
       case "visualvideoans":
         return (
           <div className="flex flex-col items-center justify-center w-full gap-8">
-            {URI && (
-              <img 
-                alt={alt} 
-                src={URI} 
-                className="w-full h-auto max-h-screen object-contain rounded-lg shadow-lg" 
-              />
-            )}
+            <img 
+              alt={alt} 
+              src={URI} 
+              className="w-full h-auto max-h-screen object-contain rounded-lg shadow-lg" 
+            />
             {vURI && (
-              <div className="w-full mt-4">
-                <video 
-                  controls 
+              <div className="w-full max-w-4xl mx-auto mt-6">
+                <EnhancedVideoPlayer 
                   src={vURI} 
-                  className="w-full h-auto max-h-screen object-contain rounded-lg shadow-lg" 
+                  title={`Video for ${alt || "Visual Question"}`}
+                  onPlayStateChange={handleVideoPlayStateChange}
                 />
               </div>
             )}
