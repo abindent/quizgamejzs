@@ -50,7 +50,7 @@ export default function QuizTimer() {
 
         // Set default volume
         if (alarmSoundRef.current) alarmSoundRef.current.volume = 0.7;
-        if (tickSoundRef.current) tickSoundRef.current.volume = 0.3;
+        if (tickSoundRef.current) tickSoundRef.current.volume = 0.4;
 
         return () => {
             // Cleanup timer on unmount
