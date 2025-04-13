@@ -1,4 +1,10 @@
 import Layout from "@/layout/qnaLayout";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Intraschool Quiz",
+  description: "Participate in the interschool quiz competition.",
+};
 
 export default function Page({
   children,

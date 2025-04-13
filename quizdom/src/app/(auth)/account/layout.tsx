@@ -1,5 +1,5 @@
 import Layout from "@/layout/quizLayout";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Account Page - Quizdom",

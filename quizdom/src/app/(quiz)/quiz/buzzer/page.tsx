@@ -1,7 +1,7 @@
 import BuzzerPage from "@/components/website/quiz/buzzer";
-
+import type { Metadata } from "next";
 // METADATA
-export const metadata = {
+export const metadat : Metadata = {
   title: "Quiz Buzzer",
   description: "Participate in the quiz by buzzing in your answers.",
 };
