@@ -11,6 +11,9 @@ import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlayCircle, faPauseCircle } from "@fortawesome/free-solid-svg-icons";
 
+// TIMER
+import Timer from "@/components/website/quiz/timer"
+
 export default function Component({
   alt,
   URI,
@@ -42,6 +45,7 @@ export default function Component({
 
   return (
     <>
+
       {type === "img" && <img alt={alt} src={URI} className={styles.img} />}
       {type === "video" && <video controls src={URI} className={styles.img} />}
       {type === "audio" && (
@@ -119,6 +123,7 @@ export default function Component({
           )}
         </div>
       )}
+      <Timer />
     </>
   );
 }
