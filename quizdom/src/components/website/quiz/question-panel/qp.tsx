@@ -1,4 +1,3 @@
-// PointBlank.tsx with Fixed Type Handling
 "use client";
 
 import { useState, useEffect } from "react";
@@ -20,7 +19,7 @@ interface PointBlankProps {
   limit?: string;
 }
 
-export default function PointBlank({
+export default function QuestionPanel({
   category,
   qno,
   round,
@@ -43,11 +42,11 @@ export default function PointBlank({
   const [showAns, setShowAns] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [extension] = useState<string>(getExtension(type));
-  
+
   // Question and answer URIs
   const questionURI = `/_asset/quiz/${category}/${type}/${round}-${qno}.${extension}`;
   const answerURI = `/_asset/quiz/${category}/${type}/${round}-ans-${qno}.${extension}`;
-  
+
   // Router
   const router = useRouter();
 
@@ -77,7 +76,7 @@ export default function PointBlank({
   // Toggle between question and answer
   const toggleAnswer = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    
+
     // Confirm with the user
     if (window.confirm(`Do you want to show the ${showAns ? "question" : "answer"}?`)) {
       setShowAns(!showAns);
@@ -115,11 +114,11 @@ export default function PointBlank({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Prevent handling if user is typing in an input field
-      if (e.target instanceof HTMLInputElement || 
-          e.target instanceof HTMLTextAreaElement) {
+      if (e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement) {
         return;
       }
-      
+
       switch (e.key) {
         case 'ArrowLeft':
           if (!isPrevDisabled) goToPrevious();
@@ -136,7 +135,7 @@ export default function PointBlank({
     };
 
     window.addEventListener('keydown', handleKeyDown);
-    
+
     // Clean up
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
@@ -150,14 +149,14 @@ export default function PointBlank({
         return {
           URI: `/_asset/quiz/${category}/img/${round}-${qno}.png`,
           vURI: `/_asset/quiz/${category}/audio/${round}-${qno}.mp3`,
-          alt: `${category} - Round ${round} - Q${qno}`,
+          alt: `${getCategoryName(category)} - Round: ${getRoundFullName(round)} - Q-${qno}`,
           type
         };
       } else {
         return {
           URI: `/_asset/quiz/${category}/img/${round}-ans-${qno}.png`,
-          vURI: null,
-          alt: `${category} - Round ${round} - Q${qno} (Answer)`,
+          vURI: `/_asset/quiz/${category}/audio/ans/${round}-${qno}.mp3`,
+          alt: `${getCategoryName(category)} - Round: ${getRoundFullName(round)} - Q-${qno} (Answer)`,
           type
         };
       }
@@ -166,26 +165,60 @@ export default function PointBlank({
         return {
           URI: `/_asset/quiz/${category}/img/${round}-${qno}.png`,
           vURI: `/_asset/quiz/${category}/video/${round}-${qno}.mp4`,
-          alt: `${category} - Round ${round} - Q${qno}`,
+          alt: `${getCategoryName(category)} - Round: ${getRoundFullName(round)} - Q-${qno}`,
           type
         };
       } else {
         return {
           URI: `/_asset/quiz/${category}/img/${round}-ans-${qno}.png`,
-          vURI: `/_asset/quiz/${category}/video/${round}-ans-${qno}.mp4`,
-          alt: `${category} - Round ${round} - Q${qno} (Answer)`,
+          vURI: `/_asset/quiz/${category}/video/ans/${round}-${qno}.mp4`,
+          alt: `${getCategoryName(category)} - Round: ${getRoundFullName(round)} - Q-${qno} (Answer)`,
           type
         };
       }
     } else {
       return {
         URI: showAns ? answerURI : questionURI,
-        alt: `${category} - Round ${round} - Q${qno}${showAns ? " (Answer)" : ""}`,
+        alt: `${getCategoryName(category)} - Round: ${getRoundFullName(round)} - Q-${qno}${showAns ? " (Answer)" : ""}`,
         type
       };
     }
   };
 
+  const getRoundFullName = (round: string) => {
+    switch (round) {
+      case "mm":
+        return "Movie Mania";
+      case "oyo":
+        return "On Your Own";
+      case "pbk":
+        return "Point Blank";
+      case "cc":
+        return "Connections";
+      case "oyf":
+        return "On Your Fingertips";
+      case "pnb":
+        return "Pounce Bounce";
+      default:
+        return "Unknown Round";
+    }
+  }
+
+  // Get Category name
+  const getCategoryName = (category: string) => {
+    switch (category) {
+      case "intraschool/junior":
+        return "Intra School Junior";
+      case "intraschool/senior":
+        return "Intra School Senior";
+      case "interschool":
+        return "Inter School";
+      default:
+        return "Unknown Category";  
+    }
+  }
+
+  // Render loading spinner if still loading
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -203,7 +236,7 @@ export default function PointBlank({
               {showAns ? "Answer" : "Question"}
             </Badge>
             <Badge color="purple" size="sm">
-              Round {round}
+              {getRoundFullName(round)}
             </Badge>
             <Badge color="dark" size="sm">
               {category}
@@ -213,11 +246,11 @@ export default function PointBlank({
             Question {qno} {limit ? `of ${limit}` : ''}
           </div>
         </div>
-        
+
         <div className="relative w-full h-full flex-1 flex items-center justify-center">
           <Component {...getComponentProps()} />
         </div>
-        
+
         <div className="flex flex-wrap justify-center items-center gap-4 mt-8 w-full">
           <Button
             color="light"
@@ -228,7 +261,7 @@ export default function PointBlank({
             <HiArrowLeft className="mr-2" />
             Previous
           </Button>
-          
+
           <Button
             onClick={toggleAnswer}
             className="px-6 py-2 cursor-pointer"
@@ -236,7 +269,7 @@ export default function PointBlank({
             <HiSwitchHorizontal className="mr-2" />
             Show {showAns ? "Question" : "Answer"}
           </Button>
-          
+
           <Button
             color="light"
             onClick={goToNext}
@@ -247,7 +280,7 @@ export default function PointBlank({
             <HiArrowRight className="ml-2" />
           </Button>
         </div>
-        
+
         <div className="mt-6 text-center">
           <div className="text-xs text-gray-500 flex items-center justify-center">
             <HiInformationCircle className="mr-1" />

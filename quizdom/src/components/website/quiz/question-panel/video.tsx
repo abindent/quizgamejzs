@@ -1,4 +1,3 @@
-// EnhancedVideoPlayer.tsx
 import React, { useRef, useState, useEffect } from "react";
 import { Button, Card } from "flowbite-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -163,6 +162,23 @@ export default function EnhancedVideoPlayer({
             setHoverTimer(timer);
         }
     };
+   
+    // Reset video state when source changes
+    useEffect(() => {
+        if (videoRef.current) {
+            // Reset state when source changes
+            setCurrentTime(0);
+            setIsPlaying(false);
+            setIsLoading(true);
+
+            // Force the video element to load the new source
+            videoRef.current.load();
+
+            if (onPlayStateChange) {
+                onPlayStateChange(false);
+            }
+        }
+    }, [src, onPlayStateChange]);
 
     // Set up video event listeners
     useEffect(() => {

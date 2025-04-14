@@ -1,4 +1,3 @@
-// EnhancedAudioPlayer.tsx - Fixed version
 import React, { useRef, useState, useEffect } from "react";
 import { Button, Card, Tooltip } from "flowbite-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -157,6 +156,22 @@ export default function EnhancedAudioPlayer({
 
         setIsDragging(false);
     };
+    // Update audio source when src prop changes
+    useEffect(() => {
+        if (audioRef.current) {
+            // Reset state when source changes
+            setCurrentTime(0);
+            setIsPlaying(false);
+            setIsLoading(true);
+
+            // Force the audio element to load the new source
+            audioRef.current.load();
+
+            if (onPlayStateChange) {
+                onPlayStateChange(false);
+            }
+        }
+    }, [src, onPlayStateChange]);
 
     // Set up audio event listeners
     useEffect(() => {
