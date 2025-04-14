@@ -57,13 +57,11 @@ export default function EnhancedVideoPlayer({
 
         if (isPlaying) {
             videoRef.current.pause();
-            toast.info("Paused video playback");
         } else {
             videoRef.current.play().catch(error => {
                 toast.error("Failed to play video. Please try again.");
                 console.error("Video playback error:", error);
             });
-            toast.success("Started video playback");
         }
     };
 
@@ -144,7 +142,6 @@ export default function EnhancedVideoPlayer({
         if (!videoRef.current) return;
         videoRef.current.playbackRate = rate;
         setPlaybackRate(rate);
-        toast.info(`Playback speed: ${rate}x`);
     };
 
     // Auto-hide controls after a period of inactivity
@@ -162,7 +159,7 @@ export default function EnhancedVideoPlayer({
             setHoverTimer(timer);
         }
     };
-   
+
     // Reset video state when source changes
     useEffect(() => {
         if (videoRef.current) {
@@ -173,12 +170,8 @@ export default function EnhancedVideoPlayer({
 
             // Force the video element to load the new source
             videoRef.current.load();
-
-            if (onPlayStateChange) {
-                onPlayStateChange(false);
-            }
         }
-    }, [src, onPlayStateChange]);
+    }, [src]);
 
     // Set up video event listeners
     useEffect(() => {

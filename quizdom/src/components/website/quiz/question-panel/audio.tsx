@@ -36,6 +36,7 @@ export default function EnhancedAudioPlayer({
     const [isMuted, setIsMuted] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isDragging, setIsDragging] = useState<boolean>(false);
+    const [wasPlayingBeforeSeek, setWasPlayingBeforeSeek] = useState<boolean>(false);
 
     // Format time in MM:SS format
     const formatTime = (timeInSeconds: number): string => {
@@ -52,7 +53,6 @@ export default function EnhancedAudioPlayer({
 
         if (isPlaying) {
             audioRef.current.pause();
-            toast.info("Paused audio playback");
         } else {
             // If audio has reached the end, reset it first
             if (currentTime >= duration && duration > 0) {
@@ -64,7 +64,6 @@ export default function EnhancedAudioPlayer({
                 toast.error("Failed to play audio. Please try again.");
                 console.error("Audio playback error:", error);
             });
-            toast.success("Started audio playback");
         }
 
         setIsPlaying(!isPlaying);
@@ -79,7 +78,6 @@ export default function EnhancedAudioPlayer({
         const newTime = Math.min(currentTime + 10, duration);
         audioRef.current.currentTime = newTime;
         setCurrentTime(newTime);
-        toast.info("Skipped forward 10 seconds");
     };
 
     // Skip backward 10 seconds
@@ -88,7 +86,6 @@ export default function EnhancedAudioPlayer({
         const newTime = Math.max(currentTime - 10, 0);
         audioRef.current.currentTime = newTime;
         setCurrentTime(newTime);
-        toast.info("Skipped backward 10 seconds");
     };
 
     // Reset to beginning
@@ -125,6 +122,7 @@ export default function EnhancedAudioPlayer({
     // Handle start of seeking
     const handleSeekStart = () => {
         setIsDragging(true);
+        setWasPlayingBeforeSeek(isPlaying);
         if (audioRef.current && isPlaying) {
             audioRef.current.pause();
         }
@@ -147,15 +145,17 @@ export default function EnhancedAudioPlayer({
             setCurrentTime(validTime);
 
             // Resume playback if it was playing before
-            if (isPlaying) {
+            if (wasPlayingBeforeSeek) {
                 audioRef.current.play().catch(error => {
                     console.error("Failed to resume playback after seeking:", error);
+                    setIsPlaying(false);
                 });
             }
         }
 
         setIsDragging(false);
     };
+
     // Update audio source when src prop changes
     useEffect(() => {
         if (audioRef.current) {
@@ -166,12 +166,8 @@ export default function EnhancedAudioPlayer({
 
             // Force the audio element to load the new source
             audioRef.current.load();
-
-            if (onPlayStateChange) {
-                onPlayStateChange(false);
-            }
         }
-    }, [src, onPlayStateChange]);
+    }, [src]);
 
     // Set up audio event listeners
     useEffect(() => {
