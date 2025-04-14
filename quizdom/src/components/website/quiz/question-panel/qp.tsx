@@ -239,7 +239,7 @@ export default function QuestionPanel({
               {getRoundFullName(round)}
             </Badge>
             <Badge color="dark" size="sm">
-              {category}
+              {getCategoryName(category)}
             </Badge>
           </div>
           <div className="text-sm text-gray-500">
