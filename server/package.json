@@ -9,6 +9,7 @@
   "private": true,
   "scripts": {
     "dev": "nodemon index.ts",
+    "build": "tsc",
     "generate": "npx prisma generate",
     "format": "npx prisma format",
     "migrate": "npx prisma db push --accept-data-loss"

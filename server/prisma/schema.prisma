@@ -6,7 +6,6 @@ datasource quizdom {
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["relationJoins"]
-  output = "./prisma"
 }
 
 // TEAM MODEL
