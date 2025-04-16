@@ -13,13 +13,13 @@ export default function ConnectionDebug() {
     const getConnectionInfo = () => {
       const isCodespaces = window.location.hostname.includes('.app.github.dev');
       const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const hostname = window.location.hostname.replace('3000', '3001');
-      const codesspacesUrl = `${wsProtocol}//${hostname}`;
+      const backendURl = process.env.NEXT_PUBLIC_BACKEND_API_URI;
+      const codesspacesUrl = `${wsProtocol}//${backendURl?.replace(/https?:\/\//, '')}`;
 
       setDebugInfo({
         isCodespaces,
         hostname: window.location.hostname,
-        expectedUrl: isCodespaces ? codesspacesUrl : process.env.NEXT_PUBLIC_SERVER_URL,
+        expectedUrl: codesspacesUrl,
         socketConnected: socket?.connected,
         socketId: socket?.id,
         transportType: socket?.io?.engine?.transport?.name,

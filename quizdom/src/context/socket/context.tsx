@@ -34,20 +34,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
 
   const socket = useMemo(() => {
     if (typeof window === "undefined") return null;
+    const serverUrl =
+      process.env.NEXT_PUBLIC_BACKEND_API_URI || "https://quizdom-553x.onrender.com";
 
-    // Determine if running in Codespaces by checking hostname; adjust based on your Codespace setup.
-    const isCodespaces = window.location.hostname.includes(".app.github.dev");
-    let serverUrl: string;
-    if (isCodespaces) {
-      // Replace '-3000' with '-3001' in the hostname for the server URL
-      serverUrl = `https://${window.location.hostname.replace(
-        "-3000",
-        "-3001"
-      )}`;
-    } else {
-      serverUrl =
-        process.env.NEXT_PUBLIC_BACKEND_API_URL || "http://localhost:3001";
-    }
     console.log("Connecting to server at:", serverUrl);
 
     const socketInstance = io(serverUrl, {
